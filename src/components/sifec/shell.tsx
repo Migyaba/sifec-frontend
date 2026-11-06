@@ -120,7 +120,7 @@ function MobileNav(props: { groups: NavGroup[]; user: SessionUser; onLogout: () 
       >
         <Menu className="size-5" aria-hidden="true" />
       </SheetTrigger>
-      <SheetContent side="left" className="flex w-72 flex-col gap-0 border-0 bg-sidebar p-0 text-sidebar-foreground">
+      <SheetContent side="left" className="flex w-[80%] max-w-xs flex-col gap-0 border-0 bg-sidebar p-0 text-sidebar-foreground">
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <SidebarContent {...props} onNavigate={() => setOpen(false)} />
       </SheetContent>
@@ -141,7 +141,7 @@ export function AppShell({
   const canSearch = user.role !== "admin_technique"
   return (
     <div className="flex min-h-svh">
-      <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col bg-sidebar text-sidebar-foreground lg:flex">
+      <aside className="sticky top-0 hidden h-svh w-[17%] min-w-56 max-w-72 shrink-0 flex-col bg-sidebar text-sidebar-foreground lg:flex">
         <SidebarContent groups={groups} user={user} onLogout={onLogout} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
@@ -152,7 +152,7 @@ export function AppShell({
             <Wordmark />
           </div>
           {canSearch ? (
-            <label className="relative ml-auto w-full max-w-md lg:ml-0">
+            <label className="relative ml-auto w-full max-w-[45%] lg:ml-0">
               <span className="sr-only">Rechercher</span>
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
               <input

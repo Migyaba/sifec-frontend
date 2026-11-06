@@ -16,6 +16,7 @@ import { BrandMark, Wordmark } from "@/components/sifec/brand"
 import { ConfidenceTag, LEVELS, Missing, Proof, type Level } from "@/components/sifec/confidence"
 import { Deadline } from "@/components/sifec/deadline"
 import { Notice } from "@/components/sifec/notice"
+import { Page } from "@/components/sifec/page"
 import { Pathway, ValidationGlyph, type Step } from "@/components/sifec/pathway"
 import { cn } from "@/lib/utils"
 import { CommonComponentsDemo } from "@/pages/CommonComponentsDemo"
@@ -176,7 +177,7 @@ export function DesignSystemPage() {
   const [busy, setBusy] = useState(false)
 
   return (
-    <div className="mx-auto max-w-[76rem] px-6 pt-8 pb-24 lg:px-10">
+    <Page>
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-[64ch]">
           <h1 className="text-[1.75rem] leading-tight font-extrabold text-ink">Système de design</h1>
@@ -576,6 +577,6 @@ export function DesignSystemPage() {
       >
         <CommonComponentsDemo />
       </Section>
-    </div>
+    </Page>
   )
 }

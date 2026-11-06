@@ -2,17 +2,18 @@ import { Construction, Lock, SearchX } from "lucide-react"
 import { Link } from "react-router"
 
 import type { NavItem } from "@/app/navigation"
+import { Page } from "@/components/sifec/page"
 import { Button } from "@/components/ui/button"
 
 function Status({ icon: Icon, title, children }: { icon: typeof Lock; title: string; children: React.ReactNode }) {
   return (
-    <div className="mx-auto max-w-[76rem] px-6 pt-8 pb-24 lg:px-10">
+    <Page>
       <div className="grid place-items-center rounded-xl bg-card px-6 py-16 text-center ring-1 ring-line">
         <Icon className="size-8 text-ink-muted" strokeWidth={1.75} aria-hidden="true" />
         <h1 className="mt-3 text-lg font-extrabold text-ink">{title}</h1>
         <div className="mt-1 max-w-[56ch] text-[0.8125rem] text-ink-muted">{children}</div>
       </div>
-    </div>
+    </Page>
   )
 }
 

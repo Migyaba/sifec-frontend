@@ -11,7 +11,7 @@ export function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="grid min-h-svh grid-rows-[auto_1fr] lg:grid-cols-[minmax(22rem,30rem)_1fr] lg:grid-rows-none">
+    <div className="grid min-h-svh grid-rows-[auto_1fr] lg:grid-cols-[minmax(20rem,35%)_1fr] lg:grid-rows-none">
       <aside className="flex flex-col justify-between bg-sidebar px-8 py-6 text-sidebar-foreground lg:px-12 lg:py-12">
         <div className="flex items-center gap-3">
           <BrandMark className="size-10" />
