@@ -78,6 +78,8 @@ export function authMessage(error: unknown): string | null {
   if (error instanceof ApiError) {
     if (error.code === "invalid_credentials") return "Adresse ou mot de passe incorrect."
     if (error.code === "invalid_token") return "Code incorrect ou expiré. Saisissez le code affiché maintenant."
+    // Après un code faux, le serveur bloque quelques secondes, même le bon code : il dit combien.
+    if (error.code === "otp_throttled") return error.message
     if (error.status === 429) return "Trop de tentatives. Patientez quelques minutes avant de réessayer."
     if (error.status === 400) return "Vérifiez les champs signalés."
   }

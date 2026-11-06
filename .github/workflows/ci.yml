@@ -1,0 +1,100 @@
+# Intégration continue de l'interface (plan de l'interface, §6.3) : un échec bloque la fusion.
+# Le dépôt sifec-backend est privé : le secret SIFEC_BACKEND_TOKEN (jeton en lecture seule sur
+# ce dépôt) permet d'en lire le schéma OpenAPI et de lancer le vrai backend pour les parcours.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sifec-frontend
+      - uses: actions/checkout@v4
+        with:
+          repository: Migyaba/sifec-backend
+          token: ${{ secrets.SIFEC_BACKEND_TOKEN }}
+          path: sifec-backend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: sifec-frontend/package-lock.json
+      - name: Dépendances
+        working-directory: sifec-frontend
+        run: npm ci
+      - name: Lint (oxlint)
+        working-directory: sifec-frontend
+        run: npm run lint
+      - name: Frontières entre modules (dependency-cruiser)
+        working-directory: sifec-frontend
+        run: npm run lint:modules
+      - name: Types et construction
+        working-directory: sifec-frontend
+        run: npm run build
+      - name: Tests (Vitest)
+        working-directory: sifec-frontend
+        run: npm run test
+      - name: Contrat de l'API (client à jour du schéma du backend)
+        working-directory: sifec-frontend
+        run: npm run api:check
+
+  parcours:
+    runs-on: ubuntu-latest
+    needs: verification
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: sifec
+          POSTGRES_USER: sifec
+          POSTGRES_PASSWORD: sifec
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U sifec -d sifec"
+          --health-interval 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-secret
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sifec-frontend
+      - uses: actions/checkout@v4
+        with:
+          repository: Migyaba/sifec-backend
+          token: ${{ secrets.SIFEC_BACKEND_TOKEN }}
+          path: sifec-backend
+      - uses: astral-sh/setup-uv@v6
+      - name: Backend
+        working-directory: sifec-backend
+        run: uv sync --frozen
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: sifec-frontend/package-lock.json
+      - name: Interface
+        working-directory: sifec-frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Parcours réels (Playwright, base jetable sifec_e2e)
+        working-directory: sifec-frontend
+        run: npm run e2e
+      - name: Rapport des parcours
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-playwright
+          path: sifec-frontend/playwright-report
+          retention-days: 7
