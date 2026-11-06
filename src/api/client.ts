@@ -44,10 +44,10 @@ async function csrfToken(): Promise<string | null> {
   return readCookie(CSRF_COOKIE)
 }
 
-type Listener = () => void
+type Listener = (url: string) => void
 const unauthorizedListeners = new Set<Listener>()
 
-/** L'application s'abonne pour renvoyer vers la page de connexion. */
+/** L'application s'abonne pour renvoyer vers la page de connexion ; elle reçoit l'adresse refusée. */
 export function onUnauthorized(listener: Listener): () => void {
   unauthorizedListeners.add(listener)
   return () => unauthorizedListeners.delete(listener)
@@ -64,11 +64,11 @@ const session: Middleware = {
     replayable.set(id, request.clone())
     return request
   },
-  async onResponse({ response, id }) {
+  async onResponse({ request, response, id }) {
     const original = replayable.get(id)
     replayable.delete(id)
     if (response.status === 401) {
-      unauthorizedListeners.forEach((listener) => listener())
+      unauthorizedListeners.forEach((listener) => listener(request.url))
       return response
     }
     if (response.status !== 403 || !original) return response
@@ -84,8 +84,8 @@ const session: Middleware = {
   },
 }
 
-/** `baseUrl` vide : même origine que l'interface. Les tests donnent une origine complète. */
-export function createApi(baseUrl = "") {
+/** Par défaut, l'origine de la page : l'API est servie à la même origine que l'interface. */
+export function createApi(baseUrl: string = globalThis.location?.origin ?? "") {
   const client = createClient<paths>({
     baseUrl,
     credentials: "same-origin",

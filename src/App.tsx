@@ -1,28 +1,103 @@
-import { QueryClientProvider } from "@tanstack/react-query"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router"
 
-import { makeQueryClient } from "@/api"
+import { makeQueryClient, onUnauthorized } from "@/api"
+import { ALL_ITEMS, DESIGN_ITEM, homeFor } from "@/app/navigation"
+import { hasRole, type Role } from "@/app/roles"
 import { AppShell } from "@/components/sifec/shell"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import {
+  LoginPage,
+  OtpSetupPage,
+  OtpVerifyPage,
+  RequireSession,
+  sessionKey,
+  useLogout,
+  useSession,
+  type Session,
+} from "@/features/auth"
 import { DesignSystemPage } from "@/pages/DesignSystem"
+import { ForbiddenPage, NotFoundPage, PlannedPage } from "@/pages/StatusPages"
 
-const queryClient = makeQueryClient()
+/** Une session expirée ailleurs que sur `auth/session/` fait relire la session : la garde redirige. */
+function useSessionExpiry(client: QueryClient) {
+  useEffect(
+    () =>
+      onUnauthorized((url) => {
+        if (url.includes("/api/v1/auth/")) return
+        void client.invalidateQueries({ queryKey: sessionKey })
+      }),
+    [client],
+  )
+}
+
+function RequireRole({ roles, children }: { roles: Role[]; children: React.ReactNode }) {
+  const { data } = useSession()
+  return hasRole(data?.user, roles) ? children : <ForbiddenPage />
+}
+
+function Shell() {
+  const logout = useLogout()
+  return (
+    <RequireSession>
+      {(session: Session) => (
+        <AppShell user={session.user} onLogout={() => logout.mutate()}>
+          <Outlet />
+        </AppShell>
+      )}
+    </RequireSession>
+  )
+}
+
+function Home() {
+  const { data } = useSession()
+  return data ? <Navigate to={homeFor(data.user.role)} replace /> : null
+}
+
+function NotFound() {
+  const { data } = useSession()
+  return <NotFoundPage home={data ? homeFor(data.user.role) : "/"} />
+}
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/connexion" element={<LoginPage />} />
+      <Route path="/connexion/code" element={<OtpVerifyPage />} />
+      <Route path="/connexion/activation" element={<OtpSetupPage />} />
+      <Route element={<Shell />}>
+        <Route index element={<Home />} />
+        {import.meta.env.DEV ? <Route path={DESIGN_ITEM.to} element={<DesignSystemPage />} /> : null}
+        {ALL_ITEMS.map((item) => (
+          <Route
+            key={item.to}
+            path={item.to}
+            element={
+              <RequireRole roles={item.roles}>
+                <PlannedPage item={item} />
+              </RequireRole>
+            }
+          />
+        ))}
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  )
+}
 
 export default function App() {
+  const [client] = useState(makeQueryClient)
+  useSessionExpiry(client)
   return (
-    <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <AppShell>
-          <Routes>
-            <Route path="/systeme" element={<DesignSystemPage />} />
-            <Route path="*" element={<Navigate to="/systeme" replace />} />
-          </Routes>
-        </AppShell>
-        <Toaster position="bottom-right" />
-      </TooltipProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={client}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <AppRoutes />
+          <Toaster position="bottom-right" />
+        </TooltipProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   )
 }

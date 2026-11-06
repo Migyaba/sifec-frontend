@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-L'interface est servie sur `http://localhost:5173`. Les appels à `/api` passent par le proxy de Vite vers le backend (`http://localhost:8000`) : la session Django par cookie demande la même origine.
+L'interface est servie sur `http://localhost:5173`. Les appels à `/api` passent par le proxy de Vite vers le backend (`http://localhost:8000`) : la session Django par cookie demande la même origine. En développement, le backend accepte les écritures venues de `http://localhost:5173` ; pour un autre port, le déclarer dans `DJANGO_CSRF_TRUSTED_ORIGINS` côté backend.
 
 ## Client de l'API
 
