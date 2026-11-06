@@ -74,3 +74,35 @@ export const FIELD_LABEL: Record<string, string> = {
   cv_date: "Date du CV",
   summary: "Profil",
 }
+
+/** Années d'expérience, accord pour le CV et ancienneté du CV, calculés par le serveur. */
+export function useExpertSummary(id: string) {
+  return useQuery({
+    queryKey: ["experts", "summary", id],
+    queryFn: () => call(api.GET("/api/v1/experts/{id}/summary/", { params: { path: { id } } })),
+  })
+}
+
+export function useConsents(id: string) {
+  return useQuery({
+    queryKey: ["experts", "consents", id],
+    queryFn: () => call(api.GET("/api/v1/experts/{id}/consents/", { params: { path: { id } } })),
+  })
+}
+
+export function useConsentMutations(id: string) {
+  const client = useQueryClient()
+  const done = () => client.invalidateQueries({ predicate: (query) => query.queryKey.includes(id) })
+  return {
+    add: useMutation({
+      mutationFn: (body: S["CvConsentCreateRequest"]) =>
+        call(api.POST("/api/v1/experts/{id}/consents/", { params: { path: { id } }, body })),
+      onSuccess: done,
+    }),
+    withdraw: useMutation({
+      mutationFn: ({ consentId, ...body }: S["CvConsentWithdrawRequest"] & { consentId: string }) =>
+        call(api.POST("/api/v1/experts/{id}/consents/{consent_id}/withdraw/", { params: { path: { id, consent_id: consentId } }, body })),
+      onSuccess: done,
+    }),
+  }
+}

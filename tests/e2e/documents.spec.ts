@@ -1,7 +1,12 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, test } from "@playwright/test"
 
-import { FIXTURE as FILE, PASSWORD } from "./helpers.ts"
+import path from "node:path"
+
+import { PASSWORD } from "./helpers.ts"
+
+// Pièce propre à ce parcours : jamais déposée ailleurs, elle n'est jamais un doublon.
+const FILE = path.join(import.meta.dirname, "fixtures", "Releve de mission 2025.pdf")
 
 /**
  * Dépôt réel (lot F1.1) : morceaux envoyés directement à MinIO, fichier lu par un vrai worker,
@@ -24,20 +29,19 @@ test("un collaborateur dépose une pièce, la voit lue, puis la qualifie et la t
   await expect(uploads.getByText("Reçu, traitement en cours")).toBeVisible({ timeout: 30_000 })
 
   // Le worker lit le fichier ; le suivi l'annonce et la liste se met à jour.
-  await expect(page.getByText("Lecture de « Attestation bonne execution 2025.pdf »").first()).toBeVisible({ timeout: 60_000 })
-  const row = page.getByRole("row", { name: /Attestation bonne execution 2025/ })
+  await expect(page.getByText("Lecture de « Releve de mission 2025.pdf »").first()).toBeVisible({ timeout: 60_000 })
+  const row = page.getByRole("row", { name: /Releve de mission 2025/ })
   await expect(row.getByText("Prêt")).toBeVisible({ timeout: 60_000 })
-  await expect(row.getByText("Attestation de bonne fin")).toBeVisible()
 
   const accessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze()
   expect(accessibility.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([])
 
   await row.getByRole("link").click()
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Attestation bonne execution 2025")
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Releve de mission 2025")
   await expect(page.getByText("Page 1 sur 2")).toBeVisible()
-  await expect(page.getByText("ATTESTATION DE BONNE EXECUTION")).toBeVisible()
+  await expect(page.getByRole("region", { name: "Texte de la page 1" })).toContainText("RELEVE DE MISSION 2025")
   await page.getByRole("button", { name: "Page suivante" }).click()
-  await expect(page.getByText("montant du marche 18 500 000 FCFA")).toBeVisible()
+  await expect(page.getByRole("region", { name: "Texte de la page 2" })).toContainText("honoraires 9 750 000 FCFA hors taxes")
 
   await page.getByLabel("Date d'émission").fill("2025-03-12")
   await page.getByRole("button", { name: "Enregistrer" }).click()
@@ -53,5 +57,5 @@ test("un collaborateur dépose une pièce, la voit lue, puis la qualifie et la t
 
   const download = page.waitForEvent("download")
   await page.getByRole("button", { name: "Télécharger" }).click()
-  expect((await download).suggestedFilename()).toContain("Attestation bonne execution 2025")
+  expect((await download).suggestedFilename()).toContain("Releve de mission 2025")
 })

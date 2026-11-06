@@ -155,7 +155,7 @@ function PageReader({ version }: { version: DocumentVersion }) {
           </span>
         ) : null}
       </div>
-      <div className="max-h-[60vh] overflow-y-auto px-5 py-4">
+      <div role="region" aria-label={`Texte de la page ${number}`} className="max-h-[60vh] overflow-y-auto px-5 py-4">
         {pages.isPending ? (
           <div className="space-y-2" aria-busy="true">
             <Skeleton className="h-4 w-[90%]" />

@@ -5751,21 +5751,6 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["BackfillItem"][];
         };
-        PaginatedBidItemList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["BidItem"][];
-        };
         PaginatedBidList: {
             /** @example 123 */
             count: number;
@@ -5781,36 +5766,6 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["Bid"][];
         };
-        PaginatedBidMemberList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["BidMember"][];
-        };
-        PaginatedBidPartnerList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["BidPartner"][];
-        };
         PaginatedCorporateDocumentList: {
             /** @example 123 */
             count: number;
@@ -5825,21 +5780,6 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["CorporateDocument"][];
-        };
-        PaginatedCvConsentList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["CvConsent"][];
         };
         PaginatedDelegationList: {
             /** @example 123 */
@@ -6051,36 +5991,6 @@ export interface components {
             previous?: string | null;
             results: components["schemas"]["ReferenceMission"][];
         };
-        PaginatedRequirementSheetList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["RequirementSheet"][];
-        };
-        PaginatedSnapshotList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["Snapshot"][];
-        };
         PaginatedStepList: {
             /** @example 123 */
             count: number;
@@ -6095,21 +6005,6 @@ export interface components {
              */
             previous?: string | null;
             results: components["schemas"]["Step"][];
-        };
-        PaginatedTenderDocumentList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next?: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous?: string | null;
-            results: components["schemas"]["TenderDocument"][];
         };
         PaginatedTenderList: {
             /** @example 123 */
@@ -6238,6 +6133,9 @@ export interface components {
             role: components["schemas"]["DossierFileRoleEnum"];
             /** Format: uuid */
             document_version: string;
+            /** Format: uuid */
+            readonly document_id: string;
+            readonly document_title: string;
         };
         PastDossierFileRequest: {
             position?: number;
@@ -10401,10 +10299,7 @@ export interface operations {
     };
     bids_items_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
@@ -10419,16 +10314,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedBidItemList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["BidItem"][];
                 };
             };
             /** @description Connexion requise */
@@ -10643,10 +10529,7 @@ export interface operations {
     };
     bids_members_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
@@ -10661,16 +10544,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedBidMemberList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["BidMember"][];
                 };
             };
             /** @description Connexion requise */
@@ -10890,10 +10764,7 @@ export interface operations {
     };
     bids_partners_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
@@ -10908,16 +10779,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedBidPartnerList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["BidPartner"][];
                 };
             };
             /** @description Connexion requise */
@@ -12221,10 +12083,7 @@ export interface operations {
     };
     bids_snapshots_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
@@ -12239,16 +12098,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedSnapshotList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["Snapshot"][];
                 };
             };
             /** @description Connexion requise */
@@ -12937,10 +12787,7 @@ export interface operations {
     };
     bids_steps_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
@@ -12955,16 +12802,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedStepList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["Step"][];
                 };
             };
             /** @description Connexion requise */
@@ -16993,10 +16831,7 @@ export interface operations {
     };
     experts_consents_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) expert. */
@@ -17011,16 +16846,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedCvConsentList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["CvConsent"][];
                 };
             };
             /** @description Connexion requise */
@@ -20732,10 +20558,7 @@ export interface operations {
     };
     past_dossiers_candidates_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) past dossier. */
@@ -20750,16 +20573,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedBackfillItemList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["BackfillItem"][];
                 };
             };
             /** @description Connexion requise */
@@ -23163,10 +22977,7 @@ export interface operations {
     };
     tenders_documents_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) tender. */
@@ -23181,16 +22992,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedTenderDocumentList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["TenderDocument"][];
                 };
             };
             /** @description Connexion requise */
@@ -23346,10 +23148,7 @@ export interface operations {
     };
     tenders_sheets_list: {
         parameters: {
-            query?: {
-                /** @description Un numéro de page de l'ensemble des résultats. */
-                page?: number;
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Un(une) Chaîne UUID identifiant ce(cette) tender. */
@@ -23364,16 +23163,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedRequirementSheetList"];
-                };
-            };
-            /** @description Données invalides */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["RequirementSheet"][];
                 };
             };
             /** @description Connexion requise */

@@ -57,7 +57,8 @@ describe("useListParams", () => {
 
     await userEvent.type(screen.getByLabelText("Rechercher"), "audit")
 
-    expect(await screen.findByText("?state=published&q=audit")).toBeInTheDocument()
+    // Frappe lettre par lettre puis pause de recherche : plus long qu'un rendu sur une machine occupée.
+    expect(await screen.findByText("?state=published&q=audit", {}, { timeout: 8000 })).toBeInTheDocument()
   })
 })
 

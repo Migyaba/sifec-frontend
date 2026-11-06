@@ -19,11 +19,14 @@ export async function logout(page: Page, name: RegExp) {
   await expect(page.getByRole("heading", { name: "Connexion" })).toBeVisible()
 }
 
-/** Dépose la pièce d'essai et attend qu'elle soit lue par le worker. */
+/**
+ * Dépose la pièce d'essai et attend qu'elle soit lue par le worker. Déposée de nouveau par un
+ * autre parcours, elle est reconnue comme doublon exact : elle se cite alors comme l'original.
+ */
 export async function depositFixture(page: Page) {
   await page.goto("/documents")
   await page.getByRole("button", { name: "Déposer des documents" }).first().click()
   await page.locator('input[type="file"]').setInputFiles(FIXTURE)
-  const row = page.getByRole("row", { name: /Attestation bonne execution 2025/ }).first()
-  await expect(row.getByText("Prêt")).toBeVisible({ timeout: 60_000 })
+  await expect(page.getByRole("list", { name: "Dépôts" }).getByText("Reçu, traitement en cours")).toBeVisible({ timeout: 30_000 })
+  await expect(page.getByText("Lecture de « Attestation bonne execution 2025.pdf »").first()).toBeVisible({ timeout: 60_000 })
 }

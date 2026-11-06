@@ -24,7 +24,7 @@ export type DescribeField = (key: string) => { label: string; value: React.React
 type Picked = { versionId: string; title: string; pages: number }
 
 /** Choix de la pièce source parmi les documents lus de la base. */
-function DocumentPicker({ picked, onPick }: { picked: Picked | null; onPick: (picked: Picked | null) => void }) {
+export function DocumentPicker({ picked, onPick }: { picked: Picked | null; onPick: (picked: Picked | null) => void }) {
   const [q, setQ] = useState("")
   const results = useQuery({
     queryKey: ["documents", "picker", q],
@@ -37,7 +37,7 @@ function DocumentPicker({ picked, onPick }: { picked: Picked | null; onPick: (pi
       <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-[0.8125rem]">
         <FileText className="size-4 shrink-0 text-blue-600" aria-hidden="true" />
         <span className="min-w-0 flex-1 truncate font-semibold text-blue-900">{picked.title}</span>
-        <span className="tabular text-xs text-blue-800">{picked.pages} page(s)</span>
+        {picked.pages ? <span className="tabular text-xs text-blue-800">{picked.pages} page(s)</span> : null}
         <Button type="button" size="icon-sm" variant="ghost" onClick={() => onPick(null)} aria-label="Choisir une autre pièce">
           <X aria-hidden="true" />
         </Button>
@@ -175,11 +175,19 @@ export function ProofPanel({
   recordId,
   describe,
   editable,
+  only,
+  title = "Preuves",
+  bare = false,
 }: {
   recordType: string
   recordId: string
   describe: DescribeField
   editable: boolean
+  /** Restreint le panneau à certains champs : ceux de la fiche, ou ceux d'un élément de liste. */
+  only?: (key: string) => boolean
+  title?: string
+  /** Sans cadre ni titre : dans une ligne de liste. */
+  bare?: boolean
 }) {
   const confidence = useConfidence(recordType, recordId)
   const evidence = useEvidence(recordType, recordId)
@@ -188,19 +196,25 @@ export function ProofPanel({
   const [adding, setAdding] = useState<string | null>(null)
   const byField = new Map(confidence.data?.by_field.map((item) => [item.field, item]))
   const overall = confidence.data ? levelOf(confidence.data.level) : null
-  const fields: ProofField[] = (confidence.data?.by_field ?? []).flatMap((item) => {
+  const fields: ProofField[] = (confidence.data?.by_field ?? []).filter((item) => !only || only(item.field)).flatMap((item) => {
     const known = describe(item.field)
     return known ? [{ key: item.field, ...known }] : []
   })
 
   return (
-    <section aria-labelledby="preuves-title" className="rounded-xl bg-card ring-1 ring-line">
-      <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-        <h2 id="preuves-title" className="text-sm font-extrabold text-ink">
-          Preuves
-        </h2>
-        {overall ? <ConfidenceTag level={overall} /> : null}
-      </div>
+    <section
+      aria-label={bare ? title : undefined}
+      aria-labelledby={bare ? undefined : `${recordId}-preuves`}
+      className={bare ? "" : "rounded-xl bg-card ring-1 ring-line"}
+    >
+      {bare ? null : (
+        <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+          <h2 id={`${recordId}-preuves`} className="text-sm font-extrabold text-ink">
+            {title}
+          </h2>
+          {overall && !only ? <ConfidenceTag level={overall} /> : null}
+        </div>
+      )}
       {confidence.isError || evidence.isError ? (
         <p role="alert" className="px-4 py-3 text-xs font-semibold text-block">
           {userMessage(confidence.error ?? evidence.error)}

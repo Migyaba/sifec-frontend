@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  Building2,
   BriefcaseBusiness,
   ClipboardCheck,
   DatabaseBackup,
@@ -46,6 +47,7 @@ export const NAV: NavGroup[] = [
       { to: "/references", label: "Références", icon: Landmark, roles: CONTENT, lot: "F1.3" },
       { to: "/pieces", label: "Pièces administratives", icon: ShieldCheck, roles: CONTENT, lot: "F1.3" },
       { to: "/anciens-dossiers", label: "Dossiers antérieurs", icon: FolderClock, roles: CONTENT, lot: "F1.3" },
+      { to: "/institutions", label: "Fiches institutionnelles", icon: Building2, roles: CONTENT, lot: "F1.3" },
       { to: "/reprise", label: "Reprise de la base", icon: DatabaseBackup, roles: SUPERVISORS, lot: "F1.5" },
     ],
   },

@@ -1,0 +1,1 @@
+export { corporateDocRoutes } from "./routes"

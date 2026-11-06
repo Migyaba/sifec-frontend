@@ -55,7 +55,7 @@ test("une fiche d'expert est prouvée, renvoyée, corrigée, puis publiée par u
   await page.goto(url)
   await expect(page.getByText("Ajoutez le titre de l'expert, s'il vous plaît.")).toBeVisible()
   await page.getByLabel(/^Titre ou profession/).fill("Expert-comptable")
-  await page.getByRole("button", { name: "Enregistrer" }).click()
+  await page.getByRole("button", { name: "Enregistrer", exact: true }).click()
   await expect(page.getByText("Modifications non enregistrées")).toHaveCount(0)
   await bar.getByRole("button", { name: "Soumettre à vérification" }).click()
   await expect(bar.getByText("À vérifier", { exact: true })).toBeVisible()

@@ -23,7 +23,8 @@ export default defineConfig({
       url: "http://127.0.0.1:8000/api/v1/health/",
       reuseExistingServer: false,
       timeout: 180_000,
-      stdout: "ignore",
+      // Journal du backend dans la sortie : une erreur du serveur s'y lit directement.
+      stdout: "pipe",
     },
     {
       command: "npx vite --port 5174 --strictPort",
