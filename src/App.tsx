@@ -23,6 +23,7 @@ import {
   type Session,
 } from "@/features/auth"
 import { documentRoutes } from "@/features/documents"
+import { expertRoutes } from "@/features/experts"
 import { DesignSystemPage } from "@/pages/DesignSystem"
 import { ForbiddenPage, NotFoundPage, PlannedPage } from "@/pages/StatusPages"
 
@@ -60,7 +61,7 @@ function Shell() {
 }
 
 /** Écrans des modules construits ; les autres entrées du menu disent quel lot les apporte. */
-const FEATURE_ROUTES: FeatureRoute[] = [...documentRoutes]
+const FEATURE_ROUTES: FeatureRoute[] = [...documentRoutes, ...expertRoutes]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))
 

@@ -37,7 +37,7 @@ Couleurs de marque gardées telles quelles : `brand-green` `#8C9E1D`, `brand-lim
 ## Mise en page
 
 - Tout écran est dans `Page` (`src/components/sifec/page.tsx`) : toute la largeur disponible, marges latérales de 3 % de la largeur, qui suivent la taille de l'écran. Pas de colonne centrée à largeur fixe : un outil de travail a besoin de la largeur pour ses tableaux et son parcours.
-- Largeurs du cadre en pourcentage : barre latérale 17 % (bornée entre 14 et 18 rem pour que les libellés restent lisibles), recherche 45 % de la barre du haut au plus, panneau de navigation sur tablette 80 %, colonne de marque de la connexion 35 %.
+- Largeurs du cadre en pourcentage : barre latérale 17 % (bornée entre 15 et 18 rem pour que les libellés restent lisibles), recherche 45 % de la barre du haut au plus, panneau de navigation sur tablette 80 %, colonne de marque de la connexion 35 %.
 - Les fenêtres flottantes (menus, fiche de preuve, confirmation) gardent une largeur fixe : elles portent un texte court, à lire d'un coup d'œil.
 - Les textes longs gardent leur propre limite (68 caractères par ligne).
 

@@ -141,7 +141,7 @@ export function AppShell({
   const canSearch = user.role !== "admin_technique"
   return (
     <div className="flex min-h-svh">
-      <aside className="sticky top-0 hidden h-svh w-[17%] min-w-56 max-w-72 shrink-0 flex-col bg-sidebar text-sidebar-foreground lg:flex">
+      <aside className="sticky top-0 hidden h-svh w-[17%] min-w-60 max-w-72 shrink-0 flex-col bg-sidebar text-sidebar-foreground lg:flex">
         <SidebarContent groups={groups} user={user} onLogout={onLogout} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">

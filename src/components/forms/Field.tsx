@@ -15,9 +15,17 @@ function errorAt(errors: FieldValues, path: Path): string | undefined {
   return typeof message === "string" ? message : undefined
 }
 
+export type ControlProps = {
+  id: string
+  "aria-invalid"?: true
+  "aria-describedby"?: string
+  "aria-required"?: true
+}
+
 /**
  * Champ de formulaire : libellé au-dessus, aide en dessous, erreur qui dit quoi corriger.
- * L'enfant reçoit son identifiant et ses attributs d'accessibilité.
+ * L'enfant reçoit son identifiant et ses attributs d'accessibilité. Quand le contrôle réel est
+ * enveloppé (liste déroulante dans un `Controller`), l'enfant est une fonction qui les reçoit.
  */
 export function Field({
   name,
@@ -31,7 +39,7 @@ export function Field({
   label: string
   help?: string
   required?: boolean
-  children: React.ReactElement<Record<string, unknown>>
+  children: React.ReactElement<Record<string, unknown>> | ((control: ControlProps) => React.ReactNode)
   className?: string
 }) {
   const id = useId()
@@ -42,6 +50,12 @@ export function Field({
   const helpId = help ? `${id}-help` : undefined
   const errorId = error ? `${id}-error` : undefined
   const describedBy = [errorId, helpId].filter(Boolean).join(" ") || undefined
+  const control: ControlProps = {
+    id,
+    "aria-invalid": error ? true : undefined,
+    "aria-describedby": describedBy,
+    "aria-required": required || undefined,
+  }
 
   return (
     <div className={cn("space-y-1.5", className)}>
@@ -49,14 +63,11 @@ export function Field({
         {label}
         {required ? <span className="text-block" aria-hidden="true"> *</span> : null}
       </Label>
-      {isValidElement(children)
-        ? cloneElement(children, {
-            id,
-            "aria-invalid": error ? true : undefined,
-            "aria-describedby": describedBy,
-            "aria-required": required || undefined,
-          })
-        : children}
+      {typeof children === "function"
+        ? children(control)
+        : isValidElement(children)
+          ? cloneElement(children, control)
+          : children}
       {error ? (
         <p id={errorId} className="text-xs font-semibold text-block">
           {error}

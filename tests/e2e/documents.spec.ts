@@ -1,15 +1,12 @@
-import path from "node:path"
-
 import AxeBuilder from "@axe-core/playwright"
 import { expect, test } from "@playwright/test"
+
+import { FIXTURE as FILE, PASSWORD } from "./helpers.ts"
 
 /**
  * Dépôt réel (lot F1.1) : morceaux envoyés directement à MinIO, fichier lu par un vrai worker,
  * puis fiche du document. Compartiment propre aux parcours (sifec-e2e).
  */
-
-const PASSWORD = process.env.E2E_PASSWORD ?? "Parcours-e2e-2026"
-const FILE = path.join(import.meta.dirname, "fixtures", "Attestation bonne execution 2025.pdf")
 
 test("un collaborateur dépose une pièce, la voit lue, puis la qualifie et la télécharge", async ({ page }) => {
   // Dépôt, lecture par le worker et suivi : plus long qu'un écran ordinaire.

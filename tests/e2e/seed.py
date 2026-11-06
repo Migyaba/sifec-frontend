@@ -15,6 +15,8 @@ assert connection.settings_dict["NAME"].endswith("_e2e"), "Base de parcours atte
 PASSWORD = os.environ.get("E2E_PASSWORD", "Parcours-e2e-2026")
 ACCOUNTS = [
     ("e2e-collab@sifec.test", Role.COLLABORATEUR, "Fifa", "Houngbo"),
+    # Second collaborateur : vérifie ce que le premier a saisi (personne ne valide son travail).
+    ("e2e-collab2@sifec.test", Role.COLLABORATEUR, "Sèna", "Dossou"),
     ("e2e-pole@sifec.test", Role.CHEF_POLE, "Aurel", "Kpadonou"),
 ]
 

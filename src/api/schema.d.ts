@@ -4762,6 +4762,9 @@ export interface components {
             readonly origin: components["schemas"]["EvidenceOriginEnum"];
             /** Format: uuid */
             readonly document_version_id: string;
+            /** Format: uuid */
+            readonly document_id: string;
+            readonly document_title: string;
             readonly page_number: number;
             readonly quote: string;
             readonly match: string;
@@ -7036,6 +7039,7 @@ export interface components {
             readonly contributors: unknown;
             /** Format: uuid */
             readonly verifier: string;
+            readonly verifier_name: string;
             /** Format: date-time */
             readonly published_at: string;
         };
