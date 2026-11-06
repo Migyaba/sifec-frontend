@@ -66,6 +66,7 @@ export function FileDrop({
         tabIndex={-1}
         accept={accept}
         multiple={multiple}
+        aria-label={multiple ? "Fichiers à déposer" : "Fichier à déposer"}
         aria-describedby={`${id}-hint`}
         onChange={(event) => {
           if (event.target.files?.length) onFiles(event.target.files)

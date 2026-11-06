@@ -4564,7 +4564,7 @@ export interface components {
             readonly kind: components["schemas"]["DocumentKindEnum"];
             readonly kind_source: components["schemas"]["KindSourceEnum"];
             readonly archived: boolean;
-            readonly current_version: components["schemas"]["DocumentVersion"];
+            readonly current_version: components["schemas"]["DocumentVersion"] | null;
             /** Format: date-time */
             readonly created_at: string;
         };
@@ -4575,7 +4575,7 @@ export interface components {
             readonly kind: components["schemas"]["DocumentKindEnum"];
             readonly kind_source: components["schemas"]["KindSourceEnum"];
             readonly archived: boolean;
-            readonly current_version: components["schemas"]["DocumentVersion"];
+            readonly current_version: components["schemas"]["DocumentVersion"] | null;
             /** Format: date-time */
             readonly created_at: string;
             readonly versions: components["schemas"]["DocumentVersion"][];
@@ -4663,6 +4663,8 @@ export interface components {
         DocumentVersion: {
             /** Format: uuid */
             readonly id: string;
+            /** Format: uuid */
+            readonly document: string;
             readonly number: number;
             readonly original_filename: string;
             /** @description Emplacement d'origine, pour les fichiers repris. */

@@ -1,11 +1,13 @@
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router"
+import { lazy, Suspense, useEffect, useState } from "react"
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router"
 
 import { makeQueryClient, onUnauthorized } from "@/api"
 import { ALL_ITEMS, DESIGN_ITEM, homeFor } from "@/app/navigation"
 import { hasRole, type Role } from "@/app/roles"
+import type { FeatureRoute } from "@/app/routes"
 import { ConfirmProvider } from "@/components/confirm"
+import { ScreenBoundary } from "@/components/sifec/ScreenBoundary"
 import { AppShell } from "@/components/sifec/shell"
 import { TaskAnnouncer } from "@/components/tasks"
 import { Toaster } from "@/components/ui/sonner"
@@ -20,6 +22,7 @@ import {
   useSession,
   type Session,
 } from "@/features/auth"
+import { documentRoutes } from "@/features/documents"
 import { DesignSystemPage } from "@/pages/DesignSystem"
 import { ForbiddenPage, NotFoundPage, PlannedPage } from "@/pages/StatusPages"
 
@@ -42,15 +45,27 @@ function RequireRole({ roles, children }: { roles: Role[]; children: React.React
 
 function Shell() {
   const logout = useLogout()
+  const location = useLocation()
   return (
     <RequireSession>
       {(session: Session) => (
         <AppShell user={session.user} onLogout={() => logout.mutate()}>
-          <Outlet />
+          <ScreenBoundary key={location.pathname}>
+            <Outlet />
+          </ScreenBoundary>
         </AppShell>
       )}
     </RequireSession>
   )
+}
+
+/** Écrans des modules construits ; les autres entrées du menu disent quel lot les apporte. */
+const FEATURE_ROUTES: FeatureRoute[] = [...documentRoutes]
+const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
+const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))
+
+function Loading() {
+  return <div className="px-[3%] pt-8 text-sm text-ink-muted" role="status">Chargement de l'écran</div>
 }
 
 function Home() {
@@ -72,7 +87,20 @@ export function AppRoutes() {
       <Route element={<Shell />}>
         <Route index element={<Home />} />
         {import.meta.env.DEV ? <Route path={DESIGN_ITEM.to} element={<DesignSystemPage />} /> : null}
-        {ALL_ITEMS.map((item) => (
+        {SCREENS.map(({ path, roles, Screen }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <RequireRole roles={roles}>
+                <Suspense fallback={<Loading />}>
+                  <Screen />
+                </Suspense>
+              </RequireRole>
+            }
+          />
+        ))}
+        {ALL_ITEMS.filter((item) => !BUILT.has(item.to)).map((item) => (
           <Route
             key={item.to}
             path={item.to}

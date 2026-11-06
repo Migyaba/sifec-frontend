@@ -74,6 +74,13 @@ jobs:
           repository: Migyaba/sifec-backend
           token: ${{ secrets.SIFEC_BACKEND_TOKEN }}
           path: sifec-backend
+      - name: Stockage (MinIO, comme en développement)
+        # Un service GitHub ne reçoit pas d'arguments de commande : MinIO est lancé à la main.
+        run: |
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=sifec -e MINIO_ROOT_PASSWORD=sifec-dev-secret \
+            jumpserver/minio:RELEASE.2024-06-11T03-13-30Z server /data
+          for i in $(seq 1 30); do curl -sf http://localhost:9000/minio/health/live && break; sleep 1; done
       - uses: astral-sh/setup-uv@v6
       - name: Backend
         working-directory: sifec-backend

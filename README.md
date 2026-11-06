@@ -37,8 +37,8 @@ L'interface est servie sur `http://localhost:5173`. Les appels à `/api` passent
 
 Les parcours jouent l'interface contre le vrai backend, sur une base jetable `sifec_e2e`, recréée à chaque lancement : la base de travail n'est jamais touchée.
 
-1. Dans `sifec-backend` : `docker compose up -d --no-deps db redis`.
-2. Ici : `npm run e2e`. Playwright lance `scripts/e2e-backend.sh` (base, migrations, comptes de `tests/e2e/seed.py`, serveur sur le port 8000) puis Vite sur le port 5174.
+1. Dans `sifec-backend` : `docker compose up -d --no-deps db redis minio`.
+2. Ici : `npm run e2e`. Playwright lance `scripts/e2e-backend.sh` (base, migrations, comptes de `tests/e2e/seed.py`, compartiment MinIO `sifec-e2e`, worker Celery, serveur sur le port 8000) puis Vite sur le port 5174.
 
 ## Intégration continue
 

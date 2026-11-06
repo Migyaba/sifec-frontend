@@ -15,6 +15,10 @@ export type Column<T> = {
   align?: "left" | "right"
   /** Montants, jours, pourcentages : chiffres à chasse fixe. */
   numeric?: boolean
+  /** Texte long (titre, intitulé) : revient à la ligne au lieu d'élargir le tableau. */
+  wrap?: boolean
+  /** Colonne secondaire : masquée sous 1 280 px pour garder les colonnes utiles lisibles. */
+  secondary?: boolean
   className?: string
 }
 
@@ -91,7 +95,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl bg-card ring-1 ring-line" aria-busy={loading || undefined}>
+    <div className="overflow-x-auto rounded-xl bg-card ring-1 ring-line" aria-busy={loading || undefined}>
       <Table>
         <caption className="sr-only">{caption}</caption>
         <TableHeader>
@@ -101,7 +105,7 @@ export function DataTable<T>({
               return (
                 <TableHead
                   key={column.key}
-                  className={cn(column.align === "right" && "text-right", column.className)}
+                  className={cn(column.align === "right" && "text-right", column.secondary && "hidden xl:table-cell", column.className)}
                   aria-sort={state === "asc" ? "ascending" : state === "desc" ? "descending" : undefined}
                 >
                   {column.sortKey && onSort ? (
@@ -119,7 +123,7 @@ export function DataTable<T>({
             ? Array.from({ length: 5 }, (_, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => (
-                    <TableCell key={column.key}>
+                    <TableCell key={column.key} className={cn(column.secondary && "hidden xl:table-cell")}>
                       <Skeleton className={cn("h-4", column.align === "right" ? "ml-auto w-16" : "w-28")} />
                     </TableCell>
                   ))}
@@ -134,7 +138,13 @@ export function DataTable<T>({
                   {columns.map((column) => (
                     <TableCell
                       key={column.key}
-                      className={cn(column.align === "right" && "text-right", column.numeric && "tabular", column.className)}
+                      className={cn(
+                        column.align === "right" && "text-right",
+                        column.numeric && "tabular",
+                        column.wrap && "min-w-[14rem] whitespace-normal",
+                        column.secondary && "hidden xl:table-cell",
+                        column.className,
+                      )}
                     >
                       {column.cell(row)}
                     </TableCell>
