@@ -14,6 +14,10 @@ export const institutionConfig: RecordConfig = {
   searchPlaceholder: "Raison sociale…",
   empty: { title: "Aucune fiche institutionnelle", hint: "Commencez par celle du Cabinet : chaque dossier la reprend." },
   name: (row) => String(row.legal_name ?? ""),
+  prefill: {
+    defaults: ["organization"],
+    hint: "Choisissez les statuts, le RCCM ou une présentation du Cabinet : l'IA en tire la raison sociale, les numéros et le siège, chaque valeur avec sa page.",
+  },
   fields: [
     { name: "organization", label: "Organisation", kind: "organization", entity: true, required: true, createOnly: true },
     { name: "legal_name", label: "Raison sociale", kind: "text", required: true },

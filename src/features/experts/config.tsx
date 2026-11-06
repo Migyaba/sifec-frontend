@@ -36,6 +36,10 @@ export const expertConfig: RecordConfig = {
     { name: "summary", label: "Profil", kind: "textarea", wide: true },
   ],
   sections: EXPERT_SECTIONS,
+  prefill: {
+    defaults: ["entity", "employment"],
+    hint: "Choisissez le CV de l'expert dans les documents : l'IA en tire l'identité, les expériences, les diplômes et les langues, chaque valeur avec sa page.",
+  },
   top: (row) => <ExpertSummaryBar expertId={row.id} />,
   aside: (row, editable) => <Consents expertId={row.id} editable={editable} />,
   columns: [

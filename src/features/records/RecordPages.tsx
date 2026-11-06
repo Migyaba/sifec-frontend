@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Loader2, Plus, Save } from "lucide-react"
-import { useEffect, useMemo } from "react"
+import { Loader2, Plus, Save, Sparkles } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { Link, useNavigate, useParams } from "react-router"
 
@@ -17,6 +17,7 @@ import { useSession } from "@/features/auth"
 
 import { invalidateRecord, type RecordBase } from "./api"
 import { ItemList, type ItemSection } from "./components/ItemList"
+import { LastPrefill, PrefillPanel } from "./components/Prefill"
 import { ProofPanel } from "./components/ProofPanel"
 import { RecordStatusBadge, ReviewBar } from "./components/ReviewBar"
 import { VersionsList } from "./components/VersionsList"
@@ -50,6 +51,8 @@ export type RecordConfig = {
   name: (row: RecordRow) => string
   /** Options chargées au moment (types de pièces…), par nom de champ. */
   useOptions?: () => Record<string, Record<string, string>>
+  /** Préremplissage par l'IA, pour les types qui le permettent : champs indiqués au lancement. */
+  prefill?: { defaults: string[]; hint: string }
   /** Compléments propres au type : au-dessus de la fiche, et dans la colonne de droite. */
   top?: (row: RecordRow) => React.ReactNode
   aside?: (row: RecordRow, editable: boolean) => React.ReactNode
@@ -81,6 +84,9 @@ export function RecordListPage({ config }: { config: RecordConfig }) {
     ...(config.filters ?? []).map((filter) => ({ ...filter, options: filter.options ?? loaded[filter.optionsFrom ?? ""] ?? {} })),
   ]
   const filtered = Boolean(params.q || Object.keys(params.filters).length)
+  const [prefilling, setPrefilling] = useState(false)
+  const client = useQueryClient()
+  const fields = useFields(config)
   const newLink = (
     <Button asChild>
       <Link to={`${config.route}/nouveau`}>
@@ -97,8 +103,28 @@ export function RecordListPage({ config }: { config: RecordConfig }) {
           <h1 className="text-[1.75rem] leading-tight font-extrabold text-ink">{config.title}</h1>
           <p className="mt-1.5 text-[0.9375rem] text-ink-muted">{config.intro}</p>
         </div>
-        {newLink}
+        <div className="flex flex-wrap gap-2">
+          {config.prefill && !prefilling ? (
+            <Button variant="outline" onClick={() => setPrefilling(true)}>
+              <Sparkles data-icon="inline-start" aria-hidden="true" />
+              Préremplir depuis une pièce
+            </Button>
+          ) : null}
+          {newLink}
+        </div>
       </header>
+      {config.prefill && prefilling ? (
+        <div className="mb-6">
+          <PrefillPanel
+            recordType={config.type}
+            route={config.route}
+            hint={config.prefill.hint}
+            defaults={fields.filter((def) => config.prefill?.defaults.includes(def.name))}
+            onClose={() => setPrefilling(false)}
+            onDone={() => void client.invalidateQueries({ queryKey: ["records", config.type, "list"] })}
+          />
+        </div>
+      ) : null}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <SearchBox value={params.q} onSearch={(q) => update({ q })} label={`Rechercher : ${config.title.toLowerCase()}`} placeholder={config.searchPlaceholder} />
         {filters.map((filter) => (
@@ -277,11 +303,36 @@ export function RecordDetailPage({ config }: { config: RecordConfig }) {
             describe={(key) => (byName[key] ? { label: byName[key].label, value: displayValue(byName[key], row[key]) } : null)}
             editable={editable}
           />
+          {config.prefill && editable ? <CompleteFromDocument config={config} recordId={row.id} /> : null}
+          {config.prefill ? <LastPrefill recordType={config.type} recordId={row.id} fieldLabel={fieldLabel} /> : null}
           {config.aside?.(row, editable)}
           <VersionsList recordType={config.type} recordId={row.id} />
         </div>
       </div>
     </Page>
+  )
+}
+
+function CompleteFromDocument({ config, recordId }: { config: RecordConfig; recordId: string }) {
+  const [open, setOpen] = useState(false)
+  const client = useQueryClient()
+  if (!open) {
+    return (
+      <Button variant="outline" className="w-full" onClick={() => setOpen(true)}>
+        <Sparkles data-icon="inline-start" aria-hidden="true" />
+        Compléter depuis une pièce
+      </Button>
+    )
+  }
+  return (
+    <PrefillPanel
+      recordType={config.type}
+      route={config.route}
+      recordId={recordId}
+      hint={config.prefill?.hint ?? ""}
+      onClose={() => setOpen(false)}
+      onDone={() => void invalidateRecord(client, recordId)}
+    />
   )
 }
 

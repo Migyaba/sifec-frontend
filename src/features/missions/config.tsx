@@ -42,6 +42,10 @@ export const missionConfig: RecordConfig = {
     { name: "cabinet_share", label: "Part du Cabinet (%)", kind: "number" },
     { name: "description", label: "Prestations réalisées", kind: "textarea", wide: true },
   ],
+  prefill: {
+    defaults: ["entity"],
+    hint: "Choisissez le contrat, l'attestation ou le rapport de la mission : l'IA en tire l'intitulé, le client, les dates et le montant, chaque valeur avec sa page.",
+  },
   sections: [
     {
       collection: "certificates",

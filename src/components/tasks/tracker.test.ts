@@ -32,6 +32,18 @@ describe("suivi des tâches longues", () => {
     expect(announced).toMatchObject([{ status: "done", message: "Fiche préremplie.", href: "/experts/1" }])
   })
 
+  it("calcule le lien à la fin quand la tâche crée ce qu'il faut ouvrir", async () => {
+    track({
+      id: "create",
+      label: "Préremplissage",
+      poll: async () => ({ status: "succeeded", record: "r1" }) as Run & { record: string },
+      outcome,
+      hrefOf: (run) => `/experts/${(run as Run & { record: string }).record}`,
+    })
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(announced.at(-1)).toMatchObject({ id: "create", href: "/experts/r1" })
+  })
+
   it("ne suit pas deux fois la même tâche", () => {
     const poll = vi.fn(async () => ({ status: "running" }) as Run)
     track({ id: "t", label: "x", poll, outcome })

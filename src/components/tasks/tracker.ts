@@ -16,6 +16,8 @@ export type TaskSpec<T> = {
   outcome: (result: T) => Outcome | null
   /** Écran à ouvrir pour voir le résultat. */
   href?: string
+  /** Écran connu seulement à la fin (une fiche créée par la tâche). */
+  hrefOf?: (result: T) => string | undefined
   onSettled?: (result: T | undefined, outcome: Outcome) => void
 }
 
@@ -86,7 +88,8 @@ export function track<T>(spec: TaskSpec<T>): void {
   emit()
 
   const finish = (result: T | undefined, outcome: Outcome) => {
-    update(spec.id, { status: outcome.ok ? "done" : "failed", message: outcome.message })
+    const href = result !== undefined && spec.hrefOf ? (spec.hrefOf(result) ?? spec.href) : spec.href
+    update(spec.id, { status: outcome.ok ? "done" : "failed", message: outcome.message, href })
     const task = tasks.find((item) => item.id === spec.id)
     if (task) announce(task)
     spec.onSettled?.(result, outcome)

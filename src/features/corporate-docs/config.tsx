@@ -54,6 +54,10 @@ export const corporateDocConfig: RecordConfig = {
   name: (row) => (row.number ? `Pièce n° ${String(row.number)}` : "Pièce administrative"),
   useOptions: useTypeOptions,
   filters: [{ key: "type", label: "Type de pièce", optionsFrom: "doc_type" }],
+  prefill: {
+    defaults: ["doc_type", "entity"],
+    hint: "Choisissez la pièce lue dans les documents : l'IA en tire le numéro, l'organisme et les dates, chaque valeur avec sa page.",
+  },
   fields: [
     { name: "doc_type", label: "Type de pièce", kind: "select", required: true, createOnly: true },
     { name: "entity", label: "Titulaire", kind: "organization", entity: true, required: true, createOnly: true },
