@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { TaskIndicator } from "@/components/tasks"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
@@ -161,13 +162,16 @@ export function AppShell({
               />
             </label>
           ) : null}
+          <div className="ml-auto flex items-center gap-1">
+          <TaskIndicator />
           <button
             type="button"
-            className="relative ml-auto grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-muted hover:text-ink"
+            className="relative grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-muted hover:text-ink"
             aria-label="Alertes"
           >
             <Bell className="size-[1.125rem]" aria-hidden="true" />
           </button>
+          </div>
         </header>
         <main className="flex-1">{children}</main>
       </div>

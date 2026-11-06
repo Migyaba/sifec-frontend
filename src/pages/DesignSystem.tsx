@@ -18,6 +18,7 @@ import { Deadline } from "@/components/sifec/deadline"
 import { Notice } from "@/components/sifec/notice"
 import { Pathway, ValidationGlyph, type Step } from "@/components/sifec/pathway"
 import { cn } from "@/lib/utils"
+import { CommonComponentsDemo } from "@/pages/CommonComponentsDemo"
 
 /* Données de démonstration : toutes fictives. */
 
@@ -194,6 +195,7 @@ export function DesignSystemPage() {
             ["champs", "Champs"],
             ["tableaux", "Tableaux"],
             ["retours", "Retours"],
+            ["composants", "Composants"],
           ].map(([id, label]) => (
             <a key={id} href={`#${id}`} className="rounded-md px-2 py-1 text-ink-muted transition-colors hover:bg-muted hover:text-ink">
               {label}
@@ -565,6 +567,14 @@ export function DesignSystemPage() {
             Afficher une confirmation
           </Button>
         </div>
+      </Section>
+
+      <Section
+        id="composants"
+        title="Composants communs"
+        intro="Listes, dépôt de fichiers, tâches longues et confirmation : les briques de tous les écrans."
+      >
+        <CommonComponentsDemo />
       </Section>
     </div>
   )

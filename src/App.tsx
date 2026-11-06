@@ -5,7 +5,9 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router"
 import { makeQueryClient, onUnauthorized } from "@/api"
 import { ALL_ITEMS, DESIGN_ITEM, homeFor } from "@/app/navigation"
 import { hasRole, type Role } from "@/app/roles"
+import { ConfirmProvider } from "@/components/confirm"
 import { AppShell } from "@/components/sifec/shell"
+import { TaskAnnouncer } from "@/components/tasks"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
@@ -94,8 +96,11 @@ export default function App() {
     <QueryClientProvider client={client}>
       <BrowserRouter>
         <TooltipProvider>
-          <AppRoutes />
-          <Toaster position="bottom-right" />
+          <ConfirmProvider>
+            <AppRoutes />
+            <TaskAnnouncer />
+            <Toaster position="bottom-right" />
+          </ConfirmProvider>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
