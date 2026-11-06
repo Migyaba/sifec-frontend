@@ -15,6 +15,10 @@ npm run dev
 
 L'interface est servie sur `http://localhost:5173`. Les appels à `/api` passent par le proxy de Vite vers le backend (`http://localhost:8000`) : la session Django par cookie demande la même origine.
 
+## Client de l'API
+
+`src/api/schema.d.ts` est généré, jamais modifié à la main. Après un changement de l'API du backend : `npm run api`, puis `npm run build`, qui signale les écrans à adapter. Le générateur est lancé à versions fixées, avec son propre TypeScript 5 : le projet est en TypeScript 7, qui n'a plus l'interface JavaScript dont il a besoin.
+
 ## Commandes
 
 | Commande | Rôle |
@@ -22,4 +26,7 @@ L'interface est servie sur `http://localhost:5173`. Les appels à `/api` passent
 | `npm run dev` | Serveur de développement |
 | `npm run build` | Vérification des types et construction |
 | `npm run lint` | Lint (oxlint) |
+| `npm run test` | Tests (Vitest) |
+| `npm run api` | Régénère `src/api/schema.d.ts` depuis `../sifec-backend/openapi/schema.yml` |
+| `npm run api:check` | Échoue si le client ne correspond plus au schéma du backend (`SIFEC_SCHEMA` pour un autre chemin) |
 | `npm run preview` | Aperçu de la construction |
