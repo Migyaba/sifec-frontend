@@ -27,6 +27,8 @@ Le vert et l'orange disent l'état d'une preuve (synthèse, §4.2). Hors de la m
 
 Couleurs de marque gardées telles quelles : `brand-green` `#8C9E1D`, `brand-lime` `#B3C741`, `brand-blue` `#205A9A`, `brand-sky` `#1177A8`, `brand-orange` `#F68C40`. Le vert de marque et l'orange ne portent pas de texte sur blanc (contraste 3,0 et 2,4).
 
+- Mots trouvés par une recherche : surlignés en bleu clair (`blue-100`), jamais en vert ni en orange, qui ont un sens.
+
 ## Texte
 
 - Nunito Sans (variable, hébergée avec l'application) pour toute l'interface ; Nunito pour le nom du produit, proche du lettrage du logo.

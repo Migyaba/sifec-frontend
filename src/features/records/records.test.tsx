@@ -138,7 +138,7 @@ describe("panneau des preuves", () => {
 
     expect(await screen.findByText("Date du CV")).toBeInTheDocument()
     expect(screen.getByText("Aucune pièce source")).toBeInTheDocument()
-    expect(screen.getByRole("link", { name: "Passeport" })).toHaveAttribute("href", "/documents/d1")
+    expect(screen.getByRole("link", { name: "Passeport" })).toHaveAttribute("href", "/documents/d1?page=2")
     expect(screen.getByText("Extrait retrouvé dans la page", { exact: false })).toBeInTheDocument()
     // Les champs d'un élément de liste (expériences) relèvent du lot F1.3 : ignorés ici.
     expect(screen.queryByText("experiences.x1.employer")).not.toBeInTheDocument()

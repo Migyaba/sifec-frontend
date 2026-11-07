@@ -147,7 +147,7 @@ function EvidenceItem({ evidence, onRemove }: { evidence: Evidence; onRemove?: (
     <li className="flex items-start gap-2.5 py-2">
       <FileText className="mt-0.5 size-4 shrink-0 text-blue-600" aria-hidden="true" />
       <div className="min-w-0 flex-1 text-[0.8125rem]">
-        <Link to={`/documents/${evidence.document_id}`} className="font-semibold text-ink hover:text-blue-700 hover:underline">
+        <Link to={`/documents/${evidence.document_id}?page=${evidence.page_number}`} className="font-semibold text-ink hover:text-blue-700 hover:underline">
           {evidence.document_title}
         </Link>
         <span className="tabular text-ink-muted"> · page {evidence.page_number}</span>

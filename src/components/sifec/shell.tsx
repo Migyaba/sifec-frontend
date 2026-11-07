@@ -1,6 +1,6 @@
 import { Bell, ChevronsUpDown, LogOut, Menu, Search } from "lucide-react"
 import { useState } from "react"
-import { NavLink } from "react-router"
+import { NavLink, useNavigate } from "react-router"
 
 import { navFor, type NavGroup } from "@/app/navigation"
 import { initials, ROLE_LABEL, type SessionUser } from "@/app/roles"
@@ -137,6 +137,7 @@ export function AppShell({
   onLogout: () => void
   children: React.ReactNode
 }) {
+  const navigate = useNavigate()
   const groups = navFor(user.role, { withDesign: import.meta.env.DEV })
   const canSearch = user.role !== "admin_technique"
   return (
@@ -152,15 +153,27 @@ export function AppShell({
             <Wordmark />
           </div>
           {canSearch ? (
-            <label className="relative ml-auto w-full max-w-[45%] lg:ml-0">
-              <span className="sr-only">Rechercher</span>
+            <form
+              role="search"
+              className="relative ml-auto w-full max-w-[45%] lg:ml-0"
+              onSubmit={(event) => {
+                event.preventDefault()
+                const q = new FormData(event.currentTarget).get("q")?.toString().trim()
+                if (q) navigate(`/recherche?q=${encodeURIComponent(q)}`)
+              }}
+            >
+              <label htmlFor="global-search" className="sr-only">
+                Rechercher dans la base
+              </label>
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
               <input
+                id="global-search"
+                name="q"
                 type="search"
                 placeholder="Rechercher un avis, un expert, une pièce…"
                 className="h-9 w-full rounded-lg border border-line-strong bg-card pr-3 pl-9 text-sm placeholder:text-ink-muted focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-500/25 focus-visible:outline-none"
               />
-            </label>
+            </form>
           ) : null}
           <div className="ml-auto flex items-center gap-1">
           <TaskIndicator />

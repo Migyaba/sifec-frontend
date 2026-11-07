@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { ChevronLeft, ChevronRight, Download, FileStack, FileUp, Loader2, X } from "lucide-react"
 import { useState } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useParams, useSearchParams } from "react-router"
 
 import { ApiError, userMessage } from "@/api"
 import { DataTable, type Column } from "@/components/data"
@@ -126,8 +126,9 @@ function IssuedOnField({ documentId, version }: { documentId: string; version: D
 }
 
 /** Lecture du texte, page par page : ce que les contrôles et la recherche lisent vraiment. */
-function PageReader({ version }: { version: DocumentVersion }) {
-  const [number, setNumber] = useState(1)
+function PageReader({ version, initialPage = 1 }: { version: DocumentVersion; initialPage?: number }) {
+  // Ouverte depuis une recherche ou une preuve : directement à la page citée.
+  const [number, setNumber] = useState(Math.min(Math.max(1, initialPage), Math.max(1, version.page_count)))
   const total = version.page_count
   const apiPage = Math.ceil(number / API_PAGE_SIZE)
   const pages = useVersionPages(version.status === "ready" || version.status === "duplicate" ? version.id : undefined, apiPage)
@@ -189,6 +190,8 @@ const VERSION_COLUMNS: Column<DocumentVersion>[] = [
 
 export function DocumentPage() {
   const { id = "" } = useParams()
+  const [search] = useSearchParams()
+  const initialPage = Number.parseInt(search.get("page") ?? "1", 10) || 1
   const document = useDocument(id)
   const client = useQueryClient()
   const [adding, setAdding] = useState(false)
@@ -330,7 +333,7 @@ export function DocumentPage() {
             </Button>
           ) : null}
         </div>
-        <PageReader key={read.id} version={read} />
+        <PageReader key={read.id} version={read} initialPage={read.id === current.id ? initialPage : 1} />
       </section>
 
       <section aria-labelledby="versions-title">
