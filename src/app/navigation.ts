@@ -3,6 +3,10 @@ import {
   Building2,
   BriefcaseBusiness,
   ClipboardCheck,
+  Coins,
+  FileSpreadsheet,
+  LayoutTemplate,
+  TextQuote,
   DatabaseBackup,
   FileStack,
   FlaskConical,
@@ -54,7 +58,11 @@ export const NAV: NavGroup[] = [
   {
     title: "Bibliothèque",
     items: [
-      { to: "/methodologies", label: "Méthodologies et modèles", icon: BookOpen, roles: CONTENT, lot: "F1.6" },
+      { to: "/methodologies", label: "Méthodologies", icon: BookOpen, roles: CONTENT, lot: "F1.6" },
+      { to: "/formulaires", label: "Formulaires types", icon: FileSpreadsheet, roles: CONTENT, lot: "F1.6" },
+      { to: "/modeles", label: "Modèles de documents", icon: LayoutTemplate, roles: CONTENT, lot: "F1.6" },
+      { to: "/blocs", label: "Blocs de texte", icon: TextQuote, roles: CONTENT, lot: "F1.6" },
+      { to: "/tarification", label: "Tarification", icon: Coins, roles: ["chef_departement"], lot: "F1.6" },
       { to: "/recette", label: "Banc de recette", icon: FlaskConical, roles: SUPERVISORS, lot: "F2.8" },
     ],
   },

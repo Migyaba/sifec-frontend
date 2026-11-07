@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 export type FieldDef = {
   name: string
   label: string
-  kind: "text" | "textarea" | "date" | "year" | "number" | "select" | "boolean" | "organization" | "tags" | "document"
+  kind: "text" | "textarea" | "date" | "year" | "number" | "select" | "boolean" | "organization" | "tags" | "document" | "json"
   options?: Record<string, string>
   /** Organisation : rôle recherché (client, bailleur…), ou entités du Cabinet seulement. */
   role?: OrganizationRole
@@ -39,6 +39,7 @@ export function displayValue(def: FieldDef, value: unknown): string {
   if (def.kind === "date") return day.format(new Date(`${String(value)}T12:00:00`))
   if (def.kind === "boolean") return value ? "Oui" : "Non"
   if (def.kind === "tags") return Array.isArray(value) ? value.join(", ") : String(value)
+  if (def.kind === "json") return Array.isArray(value) ? `${value.length} élément(s)` : ""
   if (def.kind === "select") return def.options?.[String(value)] ?? String(value)
   return String(value)
 }
@@ -49,6 +50,7 @@ export function defaultsOf(defs: FieldDef[], row?: Record<string, unknown>): For
       const value = row?.[def.name]
       if (def.kind === "boolean") return [def.name, Boolean(value)]
       if (def.kind === "tags") return [def.name, Array.isArray(value) ? value.join(", ") : ""]
+      if (def.kind === "json") return [def.name, JSON.stringify(value ?? [], null, 2)]
       if (!row && def.defaultValue !== undefined) return [def.name, def.defaultValue]
       return [def.name, value === null || value === undefined ? "" : String(value)]
     }),
@@ -70,6 +72,7 @@ export function payloadOf(defs: FieldDef[], values: FormValues, only?: Partial<R
     if (!only && (def.kind === "text" || def.kind === "textarea") && value === "") continue
     if (def.kind === "boolean") out[def.name] = Boolean(value)
     else if (def.kind === "organization" || def.kind === "document") out[def.name] = value === "" ? null : value
+    else if (def.kind === "json") out[def.name] = String(value).trim() ? JSON.parse(String(value)) : []
     else if (def.kind === "tags")
       out[def.name] = String(value)
         .split(",")
@@ -182,7 +185,15 @@ export function FieldControl({
   }
   return (
     <Field name={def.name} label={def.label} required={def.required} help={def.help} className={className}>
-      {def.kind === "textarea" ? (
+      {def.kind === "json" ? (
+        <Textarea
+          rows={8}
+          readOnly={locked}
+          spellCheck={false}
+          className="font-mono text-xs"
+          {...register(def.name, { validate: (value) => isJson(String(value)) || "JSON invalide : vérifiez les crochets, les virgules et les guillemets." })}
+        />
+      ) : def.kind === "textarea" ? (
         <Textarea rows={4} readOnly={locked} {...register(def.name)} />
       ) : (
         <Input
@@ -197,4 +208,14 @@ export function FieldControl({
       )}
     </Field>
   )
+}
+
+function isJson(value: string): boolean {
+  if (!value.trim()) return true
+  try {
+    JSON.parse(value)
+    return true
+  } catch {
+    return false
+  }
 }

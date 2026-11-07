@@ -27,8 +27,10 @@ import { backfillRoutes } from "@/features/backfill"
 import { corporateDocRoutes } from "@/features/corporate-docs"
 import { expertRoutes } from "@/features/experts"
 import { institutionRoutes } from "@/features/institutions"
+import { libraryRoutes } from "@/features/library"
 import { missionRoutes } from "@/features/missions"
 import { pastDossierRoutes } from "@/features/past-dossiers"
+import { pricingRoutes } from "@/features/pricing"
 import { searchRoutes } from "@/features/search"
 import { DesignSystemPage } from "@/pages/DesignSystem"
 import { ForbiddenPage, NotFoundPage, PlannedPage } from "@/pages/StatusPages"
@@ -76,6 +78,8 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...pastDossierRoutes,
   ...searchRoutes,
   ...backfillRoutes,
+  ...libraryRoutes,
+  ...pricingRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))

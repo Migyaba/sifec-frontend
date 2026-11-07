@@ -55,6 +55,8 @@ export type RecordConfig = {
   useOptions?: () => Record<string, Record<string, string>>
   /** Préremplissage par l'IA, pour les types qui le permettent : champs indiqués au lancement. */
   prefill?: { defaults: string[]; hint: string }
+  /** Complément de la liste, sous son titre (couverture des méthodologies…). */
+  listTop?: () => React.ReactNode
   /** Compléments propres au type : au-dessus de la fiche, et dans la colonne de droite. */
   top?: (row: RecordRow) => React.ReactNode
   aside?: (row: RecordRow, editable: boolean) => React.ReactNode
@@ -128,6 +130,7 @@ export function RecordListPage({ config }: { config: RecordConfig }) {
           />
         </div>
       ) : null}
+      {config.listTop ? <div className="mb-5">{config.listTop()}</div> : null}
       {activeLinks.map((filter) => (
         <div key={filter.key} className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-[0.8125rem] text-blue-900">
           <span className="flex-1">{filter.label}</span>

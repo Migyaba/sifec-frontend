@@ -25,13 +25,16 @@ export async function logout(page: Page, name: RegExp) {
  * Dépose la pièce d'essai et attend qu'elle soit lue par le worker. Déposée de nouveau par un
  * autre parcours, elle est reconnue comme doublon exact : elle se cite alors comme l'original.
  */
-export async function depositFixture(page: Page) {
+export async function depositFixture(page: Page, file = FIXTURE) {
+  const name = path.basename(file)
   await page.goto("/documents")
   await page.getByRole("button", { name: "Déposer des documents" }).first().click()
-  await page.locator('input[type="file"]').setInputFiles(FIXTURE)
+  await page.locator('input[type="file"]').setInputFiles(file)
   await expect(page.getByRole("list", { name: "Dépôts" }).getByText("Reçu, traitement en cours")).toBeVisible({ timeout: 30_000 })
-  await expect(page.getByText("Lecture de « Attestation bonne execution 2025.pdf »").first()).toBeVisible({ timeout: 60_000 })
+  await expect(page.getByText(`Lecture de « ${name} »`).first()).toBeVisible({ timeout: 60_000 })
 }
+
+export const WORD_FORM = path.join(import.meta.dirname, "fixtures", "Formulaire TECH-1 essai.docx")
 
 /** Clé de la double authentification du chef de département des parcours (tests/e2e/seed.py). */
 const CHEF_SECRET = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
