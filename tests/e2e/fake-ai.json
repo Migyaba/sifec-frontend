@@ -1,0 +1,219 @@
+[
+  {
+    "marker": "fiche d'exigences",
+    "responses": [
+      {
+        "requirements": [
+          {
+            "label": "Référence de l'avis",
+            "value": "AMI n° 007/2026",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "AVIS A MANIFESTATION D'INTERET N° 007/2026"
+            }
+          },
+          {
+            "label": "Objet",
+            "value": "Audit des comptes du projet fictif d'eau potable",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "l'audit des comptes du projet fictif d'eau potable"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Date limite de dépôt",
+            "value": "15 décembre 2026 à 10 heures",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "au plus tard le 15 décembre 2026 à 10 heures"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Nombre d'exemplaires",
+            "value": "Trois exemplaires dont un original",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p2",
+              "quote": "en trois exemplaires dont un original"
+            }
+          },
+          {
+            "label": "Langue de la manifestation",
+            "value": "Français",
+            "ambiguous": true,
+            "ambiguity_note": "L'avis ne dit pas si une traduction en anglais est acceptée.",
+            "section": null,
+            "citation": {
+              "source_id": "d1p2",
+              "quote": "Langue de la manifestation : français"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Missions similaires",
+            "value": "Cinq missions similaires au cours des cinq dernières années",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": "Article 4",
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "au moins cinq missions similaires au cours des cinq dernières années"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      }
+    ]
+  },
+  {
+    "marker": "fiche d'exigences",
+    "when": "ADDITIF N° 1",
+    "responses": [
+      {
+        "requirements": [
+          {
+            "label": "Référence de l'avis",
+            "value": "AMI n° 007/2026",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "AVIS A MANIFESTATION D'INTERET N° 007/2026"
+            }
+          },
+          {
+            "label": "Objet",
+            "value": "Audit des comptes du projet fictif d'eau potable",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "l'audit des comptes du projet fictif d'eau potable"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Date limite de dépôt",
+            "value": "22 décembre 2026 à 10 heures",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d2p1",
+              "quote": "reportée au 22 décembre 2026 à 10 heures"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Nombre d'exemplaires",
+            "value": "Trois exemplaires dont un original",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": null,
+            "citation": {
+              "source_id": "d1p2",
+              "quote": "en trois exemplaires dont un original"
+            }
+          },
+          {
+            "label": "Langue de la manifestation",
+            "value": "Français",
+            "ambiguous": true,
+            "ambiguity_note": "L'avis ne dit pas si une traduction en anglais est acceptée.",
+            "section": null,
+            "citation": {
+              "source_id": "d1p2",
+              "quote": "Langue de la manifestation : français"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": [
+          {
+            "label": "Missions similaires",
+            "value": "Cinq missions similaires au cours des cinq dernières années",
+            "ambiguous": false,
+            "ambiguity_note": null,
+            "section": "Article 4",
+            "citation": {
+              "source_id": "d1p1",
+              "quote": "au moins cinq missions similaires au cours des cinq dernières années"
+            }
+          }
+        ]
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      },
+      {
+        "requirements": []
+      }
+    ]
+  }
+]

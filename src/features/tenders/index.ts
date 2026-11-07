@@ -1,0 +1,1 @@
+export { tenderRoutes } from "./routes"

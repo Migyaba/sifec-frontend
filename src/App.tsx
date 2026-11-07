@@ -35,6 +35,7 @@ import { missionRoutes } from "@/features/missions"
 import { pastDossierRoutes } from "@/features/past-dossiers"
 import { pricingRoutes } from "@/features/pricing"
 import { searchRoutes } from "@/features/search"
+import { tenderRoutes } from "@/features/tenders"
 import { DesignSystemPage } from "@/pages/DesignSystem"
 import { ForbiddenPage, NotFoundPage, PlannedPage } from "@/pages/StatusPages"
 
@@ -90,6 +91,7 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...alertRoutes,
   ...dashboardRoutes,
   ...adminRoutes,
+  ...tenderRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))

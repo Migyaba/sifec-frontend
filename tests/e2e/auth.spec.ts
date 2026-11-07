@@ -40,7 +40,7 @@ test("un collaborateur se connecte, retrouve la page demandée, puis se déconne
   await login(page, COLLAB)
   await expect(page.getByRole("heading", { name: "Experts" })).toBeVisible()
   const nav = page.getByRole("navigation", { name: "Navigation principale" })
-  await expect(nav.getByRole("link", { name: "Avis et dossiers" })).toBeVisible()
+  await expect(nav.getByRole("link", { name: "Avis", exact: true })).toBeVisible()
   await expect(nav.getByRole("link", { name: "Journal des actions" })).toHaveCount(0)
 
   await page.goto("/journal")

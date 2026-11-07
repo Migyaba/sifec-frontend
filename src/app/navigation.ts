@@ -14,6 +14,7 @@ import {
   FolderClock,
   Gauge,
   Landmark,
+  Megaphone,
   ScrollText,
   Settings,
   ShieldCheck,
@@ -43,7 +44,8 @@ export const NAV: NavGroup[] = [
   {
     items: [
       { to: "/tableau-de-bord", label: "Tableau de bord", icon: Gauge, roles: CONTENT, lot: "F1.7" },
-      { to: "/dossiers", label: "Avis et dossiers", icon: BriefcaseBusiness, roles: CONTENT, lot: "F2.2" },
+      { to: "/avis", label: "Avis", icon: Megaphone, roles: CONTENT, lot: "F2.1" },
+      { to: "/dossiers", label: "Dossiers", icon: BriefcaseBusiness, roles: CONTENT, lot: "F2.2" },
       { to: "/validations", label: "Validations", icon: ClipboardCheck, roles: CONTENT, lot: "F2.2" },
       { to: "/alertes", label: "Alertes", icon: BellRing, roles: CONTENT, lot: "F1.7" },
     ],

@@ -68,7 +68,7 @@ describe("garde de session", () => {
     await userEvent.clear(field)
     await userEvent.type(field, "123456")
     await userEvent.click(screen.getByRole("button", { name: "Vérifier le code" }))
-    expect(await screen.findByRole("heading", { name: "Avis et dossiers" })).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { name: "Dossiers" })).toBeInTheDocument()
   })
 
   it("fait activer la double authentification et montre les codes de secours une fois", async () => {
@@ -112,7 +112,7 @@ describe("menu et droits", () => {
     const nav = await screen.findByRole("navigation", { name: "Navigation principale" })
     expect(within(nav).getByRole("link", { name: "Comptes et rôles" })).toBeInTheDocument()
     expect(within(nav).getByRole("link", { name: "Journal des actions" })).toBeInTheDocument()
-    expect(within(nav).queryByRole("link", { name: "Avis et dossiers" })).not.toBeInTheDocument()
+    expect(within(nav).queryByRole("link", { name: "Dossiers" })).not.toBeInTheDocument()
     expect(await screen.findByRole("heading", { name: "Comptes et rôles" })).toBeInTheDocument()
   })
 

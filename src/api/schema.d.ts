@@ -7257,6 +7257,8 @@ export interface components {
             readonly removed: boolean;
             /** Format: uuid */
             readonly document_version: string | null;
+            /** Format: uuid */
+            readonly document_id: string | null;
             readonly page_number: number | null;
             /** Paragraphe ou article */
             readonly section: string;
@@ -7631,6 +7633,10 @@ export interface components {
             kind: components["schemas"]["TenderDocumentKindEnum"];
             /** Format: uuid */
             document_version: string;
+            /** Format: uuid */
+            readonly document_id: string;
+            readonly document_title: string;
+            readonly reading_status: string;
             /** Intitulé */
             label?: string;
             /**

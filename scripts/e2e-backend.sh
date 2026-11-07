@@ -38,7 +38,7 @@ uv run python manage.py storage_init
 # Un vrai worker : les fichiers déposés sont lus en tâche de fond, comme en production.
 # File « ai » comprise : le préremplissage y passe. Fournisseur d'IA simulé : aucun document
 # n'est envoyé à l'extérieur, et sans réponse préparée le préremplissage échoue proprement.
-AI_PROVIDER=fake uv run celery -A config worker -l warning -Q default,ingestion,ai --concurrency 2 &
+AI_PROVIDER=fake AI_FAKE_SCRIPT="$FRONTEND/tests/e2e/fake-ai.json" uv run celery -A config worker -l warning -Q default,ingestion,ai --concurrency 2 &
 WORKER=$!
 trap 'kill $WORKER 2> /dev/null' EXIT
 AI_PROVIDER=fake uv run python manage.py runserver 127.0.0.1:8000 --noreload
