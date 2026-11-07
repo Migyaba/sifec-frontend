@@ -100,7 +100,7 @@ describe("garde de session", () => {
     await userEvent.click(screen.getByRole("checkbox"))
     await userEvent.click(proceed)
 
-    expect(await screen.findByRole("heading", { name: "Tableau de bord" })).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { level: 1, name: "Bonjour Aurel" })).toBeInTheDocument()
   })
 })
 

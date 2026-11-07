@@ -1,4 +1,5 @@
 import {
+  BellRing,
   BookOpen,
   Building2,
   BriefcaseBusiness,
@@ -41,6 +42,7 @@ export const NAV: NavGroup[] = [
       { to: "/tableau-de-bord", label: "Tableau de bord", icon: Gauge, roles: CONTENT, lot: "F1.7" },
       { to: "/dossiers", label: "Avis et dossiers", icon: BriefcaseBusiness, roles: CONTENT, lot: "F2.2" },
       { to: "/validations", label: "Validations", icon: ClipboardCheck, roles: CONTENT, lot: "F2.2" },
+      { to: "/alertes", label: "Alertes", icon: BellRing, roles: CONTENT, lot: "F1.7" },
     ],
   },
   {

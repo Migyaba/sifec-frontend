@@ -70,7 +70,7 @@ test("un chef de pôle active la double authentification, puis entre avec un cod
   await expect(proceed).toBeDisabled()
   await page.getByRole("checkbox").check()
   await proceed.click()
-  await expect(page.getByRole("heading", { name: "Tableau de bord" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Bonjour Aurel" })).toBeVisible()
 
   await logout(page, /Aurel Kpadonou/)
   await login(page, POLE)
@@ -88,5 +88,5 @@ test("un chef de pôle active la double authentification, puis entre avec un cod
 
   await page.waitForTimeout(1500)
   await page.getByRole("button", { name: "Vérifier le code" }).click()
-  await expect(page.getByRole("heading", { name: "Tableau de bord" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Bonjour Aurel" })).toBeVisible()
 })

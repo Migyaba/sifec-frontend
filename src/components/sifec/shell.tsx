@@ -1,4 +1,4 @@
-import { Bell, ChevronsUpDown, LogOut, Menu, Search } from "lucide-react"
+import { ChevronsUpDown, LogOut, Menu, Search } from "lucide-react"
 import { useState } from "react"
 import { NavLink, useNavigate } from "react-router"
 
@@ -131,10 +131,13 @@ function MobileNav(props: { groups: NavGroup[]; user: SessionUser; onLogout: () 
 export function AppShell({
   user,
   onLogout,
+  actions,
   children,
 }: {
   user: SessionUser
   onLogout: () => void
+  /** Éléments de la barre du haut fournis par l'application (cloche des notifications). */
+  actions?: React.ReactNode
   children: React.ReactNode
 }) {
   const navigate = useNavigate()
@@ -177,13 +180,7 @@ export function AppShell({
           ) : null}
           <div className="ml-auto flex items-center gap-1">
           <TaskIndicator />
-          <button
-            type="button"
-            className="relative grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-muted hover:text-ink"
-            aria-label="Alertes"
-          >
-            <Bell className="size-[1.125rem]" aria-hidden="true" />
-          </button>
+          {actions}
           </div>
         </header>
         <main className="flex-1">{children}</main>

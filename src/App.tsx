@@ -23,8 +23,10 @@ import {
   type Session,
 } from "@/features/auth"
 import { documentRoutes } from "@/features/documents"
+import { alertRoutes, NotificationBell } from "@/features/alerts"
 import { backfillRoutes } from "@/features/backfill"
 import { corporateDocRoutes } from "@/features/corporate-docs"
+import { dashboardRoutes } from "@/features/dashboard"
 import { expertRoutes } from "@/features/experts"
 import { institutionRoutes } from "@/features/institutions"
 import { libraryRoutes } from "@/features/library"
@@ -58,7 +60,7 @@ function Shell() {
   return (
     <RequireSession>
       {(session: Session) => (
-        <AppShell user={session.user} onLogout={() => logout.mutate()}>
+        <AppShell user={session.user} onLogout={() => logout.mutate()} actions={<NotificationBell />}>
           <ScreenBoundary key={location.pathname}>
             <Outlet />
           </ScreenBoundary>
@@ -80,6 +82,8 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...backfillRoutes,
   ...libraryRoutes,
   ...pricingRoutes,
+  ...alertRoutes,
+  ...dashboardRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))
