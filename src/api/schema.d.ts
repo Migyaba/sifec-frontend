@@ -3835,6 +3835,8 @@ export interface components {
             readonly issued_on_source: components["schemas"]["IssuedOnSourceEnum"];
             /** Format: uuid */
             readonly document_version: string | null;
+            /** Format: uuid */
+            readonly document_id: string | null;
         };
         /**
          * @description * `pending` - À déposer

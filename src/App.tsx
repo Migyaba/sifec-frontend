@@ -23,6 +23,7 @@ import {
   type Session,
 } from "@/features/auth"
 import { documentRoutes } from "@/features/documents"
+import { backfillRoutes } from "@/features/backfill"
 import { corporateDocRoutes } from "@/features/corporate-docs"
 import { expertRoutes } from "@/features/experts"
 import { institutionRoutes } from "@/features/institutions"
@@ -74,6 +75,7 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...institutionRoutes,
   ...pastDossierRoutes,
   ...searchRoutes,
+  ...backfillRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))

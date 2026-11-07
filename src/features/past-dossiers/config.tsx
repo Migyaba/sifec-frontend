@@ -19,6 +19,7 @@ export const pastDossierConfig: RecordConfig = {
   empty: { title: "Aucun dossier antérieur", hint: "La reprise de l'existant crée un brouillon par dossier trouvé ; vous pouvez aussi en créer un." },
   name: (row) => String(row.title ?? ""),
   filters: [{ key: "result", label: "Résultat", options: RESULT }],
+  linkFilters: [{ key: "batch", label: "Dossiers créés par un lot de reprise." }],
   fields: [
     { name: "title", label: "Intitulé", kind: "text", required: true, wide: true },
     { name: "reference", label: "Référence de l'avis", kind: "text" },

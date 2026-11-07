@@ -48,6 +48,8 @@ export type RecordConfig = {
   columns: Column<RecordRow>[]
   /** Filtres de la liste ; `optionsFrom` prend ses choix dans `useOptions` (types de pièces…). */
   filters?: { key: string; label: string; options?: Record<string, string>; optionsFrom?: string }[]
+  /** Filtres sans liste déroulante, venus d'un lien (le lot de reprise d'un dossier antérieur). */
+  linkFilters?: { key: string; label: string }[]
   name: (row: RecordRow) => string
   /** Options chargées au moment (types de pièces…), par nom de champ. */
   useOptions?: () => Record<string, Record<string, string>>
@@ -71,8 +73,9 @@ function useFields(config: RecordConfig): FieldDef[] {
 
 /** Liste paginée d'un type de fiche, avec recherche et filtres dans l'adresse. */
 export function RecordListPage({ config }: { config: RecordConfig }) {
-  const keys = (config.filters ?? []).map((filter) => filter.key)
+  const keys = [...(config.filters ?? []), ...(config.linkFilters ?? [])].map((filter) => filter.key)
   const { params, query, update } = useListParams(["status", ...keys])
+  const activeLinks = (config.linkFilters ?? []).filter((filter) => params.filters[filter.key])
   const list = useQuery({
     queryKey: ["records", config.type, "list", query],
     queryFn: () => call(loose.GET(`${config.base}/`, { params: { query } })) as Promise<{ count: number; results: RecordRow[] }>,
@@ -125,6 +128,14 @@ export function RecordListPage({ config }: { config: RecordConfig }) {
           />
         </div>
       ) : null}
+      {activeLinks.map((filter) => (
+        <div key={filter.key} className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-[0.8125rem] text-blue-900">
+          <span className="flex-1">{filter.label}</span>
+          <Button size="sm" variant="ghost" onClick={() => update({ filters: { [filter.key]: null } })}>
+            Retirer ce filtre
+          </Button>
+        </div>
+      ))}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <SearchBox value={params.q} onSearch={(q) => update({ q })} label={`Rechercher : ${config.title.toLowerCase()}`} placeholder={config.searchPlaceholder} />
         {filters.map((filter) => (

@@ -16,6 +16,9 @@ export DJANGO_CSRF_TRUSTED_ORIGINS="${E2E_ORIGIN:-http://localhost:5174}"
 export S3_BUCKET="${E2E_BUCKET:-sifec-e2e}"
 export S3_ENDPOINT_URL="${E2E_S3_ENDPOINT_URL:-http://localhost:9000}"
 export S3_SERVER_SIDE_ENCRYPTION=""
+# Dossier existant d'essai, recréé à chaque lancement : la reprise lit ici, jamais ailleurs.
+export BACKFILL_ROOT="${E2E_BACKFILL_ROOT:-${TMPDIR:-/tmp}/sifec-e2e-reprise}"
+rm -rf "$BACKFILL_ROOT" && mkdir -p "$BACKFILL_ROOT"
 # Les parcours se connectent bien plus de 10 fois par minute depuis la même adresse.
 export LOGIN_THROTTLE_RATE="1000/min"
 export OTP_THROTTLE_RATE="1000/min"
