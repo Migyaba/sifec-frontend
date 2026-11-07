@@ -1,2 +1,2 @@
 export { adminRoutes } from "./routes"
-export { useGrants } from "./api"
+export { useAllUsers, useGrants } from "./api"

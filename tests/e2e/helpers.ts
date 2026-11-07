@@ -36,7 +36,7 @@ export async function depositFixture(page: Page, file = FIXTURE) {
 
 export const WORD_FORM = path.join(import.meta.dirname, "fixtures", "Formulaire TECH-1 essai.docx")
 
-/** Clé de la double authentification du chef de département et de l'administrateur des parcours (tests/e2e/seed.py). */
+/** Clé de la double authentification du chef de département, du second chef de pôle et de l'administrateur des parcours (tests/e2e/seed.py). */
 const CHEF_SECRET = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
 
 /**
@@ -64,3 +64,6 @@ export async function loginAsChef(page: Page, email = "e2e-chef@sifec.test") {
 
 /** Connexion de l'administrateur technique des parcours, code compris. */
 export const loginAsAdmin = (page: Page) => loginAsChef(page, "e2e-admin@sifec.test")
+
+/** Connexion du second chef de pôle des parcours, code compris. */
+export const loginAsPole = (page: Page) => loginAsChef(page, "e2e-pole2@sifec.test")

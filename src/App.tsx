@@ -26,6 +26,7 @@ import { adminRoutes, useGrants } from "@/features/admin"
 import { documentRoutes } from "@/features/documents"
 import { alertRoutes, NotificationBell } from "@/features/alerts"
 import { backfillRoutes } from "@/features/backfill"
+import { bidRoutes } from "@/features/bids"
 import { corporateDocRoutes } from "@/features/corporate-docs"
 import { dashboardRoutes } from "@/features/dashboard"
 import { expertRoutes } from "@/features/experts"
@@ -92,6 +93,7 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...dashboardRoutes,
   ...adminRoutes,
   ...tenderRoutes,
+  ...bidRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))

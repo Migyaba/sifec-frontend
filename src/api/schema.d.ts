@@ -1380,6 +1380,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/bids/{id}/validations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Décisions prises sur le parcours, les dépassées comprises, de la plus ancienne. */
+        get: operations["bids_validations_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/corporate-document-types/": {
         parameters: {
             query?: never;
@@ -3918,10 +3935,19 @@ export interface components {
             readonly id: string;
             /** Format: uuid */
             tender: string;
+            readonly reference: string;
+            readonly title: string;
+            readonly procedure: string;
+            /** Format: date-time */
+            readonly deadline: string | null;
             /** Parcours */
             readonly workflow: string;
             /** Format: uuid */
             lead_entity: string;
+            readonly lead_entity_name: string;
+            readonly steps_done: number;
+            readonly steps_total: number;
+            readonly current_steps: string[];
             readonly status: components["schemas"]["BidStatusEnum"];
             readonly closing_reason: string;
             readonly reinforced_review: boolean;
@@ -7821,6 +7847,24 @@ export interface components {
             /** @default  */
             comment: string;
         };
+        /** @description Décision prise sur une étape, par qui, au nom de qui, et si elle tient toujours. */
+        Validation: {
+            /** Format: uuid */
+            id: string;
+            step: string;
+            decision: string;
+            /** Format: uuid */
+            validated_by: string;
+            /** Format: uuid */
+            on_behalf_of: string | null;
+            comment: string;
+            subject_version: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            invalidated_at: string | null;
+            invalidated_reason: string;
+        };
         WaitingValidation: {
             /** Format: uuid */
             bid_id: string;
@@ -7829,6 +7873,7 @@ export interface components {
             label: string;
             /** Format: date-time */
             waiting_since: string;
+            delegated: boolean;
         };
         Waiver: {
             /** Format: uuid */
@@ -8780,8 +8825,12 @@ export interface operations {
             query?: {
                 /** @description Un numéro de page de l'ensemble des résultats. */
                 page?: number;
+                /** @description Recherche dans la référence et l'intitulé */
+                q?: string;
                 /** @description État du dossier */
                 status?: string;
+                /** @description Dossiers de cet avis */
+                tender?: string;
             };
             header?: never;
             path?: never;
@@ -14224,6 +14273,55 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Connexion requise */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Accès refusé */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Introuvable, ou accès refusé */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    bids_validations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Un(une) Chaîne UUID identifiant ce(cette) bid. */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Validation"][];
                 };
             };
             /** @description Connexion requise */

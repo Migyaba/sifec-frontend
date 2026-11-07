@@ -8,6 +8,7 @@ import { Notice } from "@/components/sifec/notice"
 import { Page } from "@/components/sifec/page"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { TenderBids } from "@/features/bids"
 import { MISSION_NATURE, OrganizationName, PROCEDURE } from "@/features/records"
 
 import { useSheets, useTender, useUpdateTender } from "../api"
@@ -116,6 +117,7 @@ export function TenderPage() {
       <div className="space-y-5">
         <TenderDocuments tenderId={id} hasSheet={Boolean(sheets.data?.length)} />
         <RequirementSheetPanel tender={data} />
+        <TenderBids tenderId={id} />
       </div>
     </Page>
   )

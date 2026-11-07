@@ -119,10 +119,13 @@ export function DashboardPage() {
             ) : data.validations.length ? (
               <ul className="divide-y divide-line">
                 {data.validations.map((item) => (
-                  <li key={`${item.bid_id}-${item.step}`} className="flex flex-wrap items-center gap-3 px-4 py-2.5 text-[0.8125rem]">
-                    <span className="font-semibold text-ink">{item.label}</span>
-                    <span className="text-ink-muted">{item.reference}</span>
-                    <span className="ml-auto text-xs text-ink-muted">depuis le {shortDay.format(new Date(item.waiting_since))}</span>
+                  <li key={`${item.bid_id}-${item.step}`}>
+                    <Link to={`/dossiers/${item.bid_id}`} className="flex flex-wrap items-center gap-3 px-4 py-2.5 text-[0.8125rem] hover:bg-muted">
+                      <span className="font-semibold text-ink">{item.label}</span>
+                      <span className="text-ink-muted">{item.reference}</span>
+                      {item.delegated ? <span className="text-xs font-semibold text-ink">par délégation</span> : null}
+                      <span className="ml-auto text-xs text-ink-muted">depuis le {shortDay.format(new Date(item.waiting_since))}</span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -139,7 +142,9 @@ export function DashboardPage() {
                 {data.bids.map((bid) => (
                   <li key={bid.id} className="px-4 py-3">
                     <div className="flex flex-wrap items-center gap-3">
-                      <span className="min-w-0 flex-1 text-[0.8125rem] font-semibold text-ink">{bid.title}</span>
+                      <Link to={`/dossiers/${bid.id}`} className="min-w-0 flex-1 text-[0.8125rem] font-semibold text-ink hover:text-blue-700 hover:underline">
+                        {bid.title}
+                      </Link>
                       {bid.deadline && bid.days_left !== null ? (
                         <Deadline date={shortDay.format(new Date(bid.deadline))} daysLeft={bid.days_left} />
                       ) : (

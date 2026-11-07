@@ -22,10 +22,12 @@ ACCOUNTS = [
     # Second collaborateur : vérifie ce que le premier a saisi (personne ne valide son travail).
     ("e2e-collab2@sifec.test", Role.COLLABORATEUR, "Sèna", "Dossou"),
     ("e2e-pole@sifec.test", Role.CHEF_POLE, "Aurel", "Kpadonou"),
+    # Chef de pôle à la double authentification déjà activée, pour le parcours des dossiers.
+    ("e2e-pole2@sifec.test", Role.CHEF_POLE, "Mariam", "Soglo"),
     ("e2e-chef@sifec.test", Role.CHEF_DEPARTEMENT, "Rodrigue", "Agossou"),
     ("e2e-admin@sifec.test", Role.ADMIN_TECHNIQUE, "Kossi", "Mensah"),
 ]
-# Chef de département et administrateur à la double authentification déjà activée : le parcours calcule ses codes
+# Chef de département, second chef de pôle et administrateur à la double authentification déjà activée : le parcours calcule ses codes
 # avec cette clé (tests/e2e/helpers.ts). Clé d'essai, pour la base jetable seulement.
 CHEF_TOTP_KEY = "3132333435363738393031323334353637383930"
 
@@ -33,7 +35,7 @@ for email, role, first, last in ACCOUNTS:
     User.objects.filter(email=email).delete()
     User.objects.create_user(email, PASSWORD, role=role, first_name=first, last_name=last)
 
-for email in ("e2e-chef@sifec.test", "e2e-admin@sifec.test"):
+for email in ("e2e-chef@sifec.test", "e2e-pole2@sifec.test", "e2e-admin@sifec.test"):
     TOTPDevice.objects.create(
         user=User.objects.get(email=email), name="Parcours", key=CHEF_TOTP_KEY, confirmed=True
     )
