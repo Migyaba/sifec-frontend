@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "react-router"
 
 import { api, ApiError, call, type components } from "@/api"
 
@@ -62,12 +63,16 @@ export function useOtpConfirm() {
 
 export function useLogout() {
   const client = useQueryClient()
+  const navigate = useNavigate()
   return useMutation({
     mutationFn: () => call(api.POST("/api/v1/auth/logout/")),
     onSettled: () => {
-      client.clear()
-      client.setQueryData(sessionKey, undefined)
-      void client.invalidateQueries({ queryKey: sessionKey })
+      // Les données de la personne partent, et la connexion repart de l'accueil : la personne
+      // suivante n'est pas renvoyée sur l'écran de la précédente. La session est remise à zéro
+      // plutôt qu'effacée : ses observateurs la relisent.
+      client.removeQueries({ predicate: (query) => query.queryKey[0] !== sessionKey[0] })
+      navigate("/connexion", { replace: true })
+      void client.resetQueries({ queryKey: sessionKey })
     },
   })
 }

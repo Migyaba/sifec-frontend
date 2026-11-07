@@ -22,6 +22,16 @@ export function hasRole(user: Pick<SessionUser, "role" | "is_active"> | undefine
   return Boolean(user?.is_active && roles.includes(user.role))
 }
 
+/** Rôle prévu, ou délégation écrite en vigueur qui confie l'une de ces validations. */
+export function hasAccess(
+  user: Pick<SessionUser, "role" | "is_active"> | undefined,
+  roles: Role[],
+  granted: readonly string[] = [],
+  held: readonly string[] = [],
+): boolean {
+  return hasRole(user, roles) || Boolean(user?.is_active && granted.some((scope) => held.includes(scope)))
+}
+
 export function initials(user: Pick<SessionUser, "first_name" | "last_name" | "email">): string {
   const letters = [user.first_name, user.last_name].map((part) => part.trim().charAt(0)).join("")
   return (letters || user.email.charAt(0)).toUpperCase()

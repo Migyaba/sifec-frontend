@@ -23,8 +23,9 @@ ACCOUNTS = [
     ("e2e-collab2@sifec.test", Role.COLLABORATEUR, "Sèna", "Dossou"),
     ("e2e-pole@sifec.test", Role.CHEF_POLE, "Aurel", "Kpadonou"),
     ("e2e-chef@sifec.test", Role.CHEF_DEPARTEMENT, "Rodrigue", "Agossou"),
+    ("e2e-admin@sifec.test", Role.ADMIN_TECHNIQUE, "Kossi", "Mensah"),
 ]
-# Chef de département à la double authentification déjà activée : le parcours calcule ses codes
+# Chef de département et administrateur à la double authentification déjà activée : le parcours calcule ses codes
 # avec cette clé (tests/e2e/helpers.ts). Clé d'essai, pour la base jetable seulement.
 CHEF_TOTP_KEY = "3132333435363738393031323334353637383930"
 
@@ -32,8 +33,10 @@ for email, role, first, last in ACCOUNTS:
     User.objects.filter(email=email).delete()
     User.objects.create_user(email, PASSWORD, role=role, first_name=first, last_name=last)
 
-chef = User.objects.get(email="e2e-chef@sifec.test")
-TOTPDevice.objects.create(user=chef, name="Parcours", key=CHEF_TOTP_KEY, confirmed=True)
+for email in ("e2e-chef@sifec.test", "e2e-admin@sifec.test"):
+    TOTPDevice.objects.create(
+        user=User.objects.get(email=email), name="Parcours", key=CHEF_TOTP_KEY, confirmed=True
+    )
 
 # Dossier existant d'essai, pour la reprise : pièces administratives et un dossier déposé.
 root = Path(os.environ["BACKFILL_ROOT"])

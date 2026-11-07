@@ -4,5 +4,7 @@ import type { Role } from "./roles"
 export type FeatureRoute = {
   path: string
   roles: Role[]
+  /** Validations déléguées qui ouvrent aussi l'écran (délégation écrite en vigueur). */
+  grants?: string[]
   load: () => Promise<{ default: React.ComponentType }>
 }

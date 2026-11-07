@@ -36,15 +36,15 @@ export async function depositFixture(page: Page, file = FIXTURE) {
 
 export const WORD_FORM = path.join(import.meta.dirname, "fixtures", "Formulaire TECH-1 essai.docx")
 
-/** Clé de la double authentification du chef de département des parcours (tests/e2e/seed.py). */
+/** Clé de la double authentification du chef de département et de l'administrateur des parcours (tests/e2e/seed.py). */
 const CHEF_SECRET = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
 
 /**
  * Connexion du chef de département, code compris. Un code déjà servi est refusé par le serveur :
  * en cas de refus, on attend la période suivante de 30 secondes et on réessaie.
  */
-export async function loginAsChef(page: Page) {
-  await page.getByLabel("Adresse électronique").fill("e2e-chef@sifec.test")
+export async function loginAsChef(page: Page, email = "e2e-chef@sifec.test") {
+  await page.getByLabel("Adresse électronique").fill(email)
   await page.getByLabel("Mot de passe", { exact: true }).fill(PASSWORD)
   await page.getByRole("button", { name: "Se connecter" }).click()
   await expect(page.getByRole("heading", { name: "Code de vérification" })).toBeVisible()
@@ -61,3 +61,6 @@ export async function loginAsChef(page: Page) {
   }
   await expect(page.getByRole("navigation", { name: "Navigation principale" })).toBeVisible()
 }
+
+/** Connexion de l'administrateur technique des parcours, code compris. */
+export const loginAsAdmin = (page: Page) => loginAsChef(page, "e2e-admin@sifec.test")

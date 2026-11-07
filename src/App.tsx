@@ -4,7 +4,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "rea
 
 import { makeQueryClient, onUnauthorized } from "@/api"
 import { ALL_ITEMS, DESIGN_ITEM, homeFor } from "@/app/navigation"
-import { hasRole, type Role } from "@/app/roles"
+import { hasAccess, type Role } from "@/app/roles"
 import type { FeatureRoute } from "@/app/routes"
 import { ConfirmProvider } from "@/components/confirm"
 import { ScreenBoundary } from "@/components/sifec/ScreenBoundary"
@@ -22,6 +22,7 @@ import {
   useSession,
   type Session,
 } from "@/features/auth"
+import { adminRoutes, useGrants } from "@/features/admin"
 import { documentRoutes } from "@/features/documents"
 import { alertRoutes, NotificationBell } from "@/features/alerts"
 import { backfillRoutes } from "@/features/backfill"
@@ -49,25 +50,29 @@ function useSessionExpiry(client: QueryClient) {
   )
 }
 
-function RequireRole({ roles, children }: { roles: Role[]; children: React.ReactNode }) {
+function RequireRole({ roles, grants, children }: { roles: Role[]; grants?: string[]; children: React.ReactNode }) {
   const { data } = useSession()
-  return hasRole(data?.user, roles) ? children : <ForbiddenPage />
+  const held = useGrants(grants ? data?.user.id : undefined)
+  if (hasAccess(data?.user, roles, grants, held.data)) return children
+  // Une délégation se vérifie avant de refuser l'écran.
+  return grants && held.isPending ? null : <ForbiddenPage />
+}
+
+function Frame({ session }: { session: Session }) {
+  const logout = useLogout()
+  const location = useLocation()
+  const grants = useGrants(session.user.id)
+  return (
+    <AppShell user={session.user} onLogout={() => logout.mutate()} actions={<NotificationBell />} grants={grants.data}>
+      <ScreenBoundary key={location.pathname}>
+        <Outlet />
+      </ScreenBoundary>
+    </AppShell>
+  )
 }
 
 function Shell() {
-  const logout = useLogout()
-  const location = useLocation()
-  return (
-    <RequireSession>
-      {(session: Session) => (
-        <AppShell user={session.user} onLogout={() => logout.mutate()} actions={<NotificationBell />}>
-          <ScreenBoundary key={location.pathname}>
-            <Outlet />
-          </ScreenBoundary>
-        </AppShell>
-      )}
-    </RequireSession>
-  )
+  return <RequireSession>{(session: Session) => <Frame session={session} />}</RequireSession>
 }
 
 /** Écrans des modules construits ; les autres entrées du menu disent quel lot les apporte. */
@@ -84,6 +89,7 @@ const FEATURE_ROUTES: FeatureRoute[] = [
   ...pricingRoutes,
   ...alertRoutes,
   ...dashboardRoutes,
+  ...adminRoutes,
 ]
 const SCREENS = FEATURE_ROUTES.map((route) => ({ ...route, Screen: lazy(route.load) }))
 const BUILT = new Set(FEATURE_ROUTES.map((route) => route.path))
@@ -111,12 +117,12 @@ export function AppRoutes() {
       <Route element={<Shell />}>
         <Route index element={<Home />} />
         {import.meta.env.DEV ? <Route path={DESIGN_ITEM.to} element={<DesignSystemPage />} /> : null}
-        {SCREENS.map(({ path, roles, Screen }) => (
+        {SCREENS.map(({ path, roles, grants, Screen }) => (
           <Route
             key={path}
             path={path}
             element={
-              <RequireRole roles={roles}>
+              <RequireRole roles={roles} grants={grants}>
                 <Suspense fallback={<Loading />}>
                   <Screen />
                 </Suspense>

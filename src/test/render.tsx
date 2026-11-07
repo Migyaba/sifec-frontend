@@ -3,6 +3,7 @@ import { render } from "@testing-library/react"
 import { MemoryRouter } from "react-router"
 
 import { AppRoutes } from "@/App"
+import { ConfirmProvider } from "@/components/confirm"
 
 export function renderApp(path: string) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })
@@ -11,7 +12,9 @@ export function renderApp(path: string) {
     ...render(
       <QueryClientProvider client={client}>
         <MemoryRouter initialEntries={[path]}>
-          <AppRoutes />
+          <ConfirmProvider>
+            <AppRoutes />
+          </ConfirmProvider>
         </MemoryRouter>
       </QueryClientProvider>,
     ),

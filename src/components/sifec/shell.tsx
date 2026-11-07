@@ -132,16 +132,19 @@ export function AppShell({
   user,
   onLogout,
   actions,
+  grants,
   children,
 }: {
   user: SessionUser
   onLogout: () => void
   /** Éléments de la barre du haut fournis par l'application (cloche des notifications). */
   actions?: React.ReactNode
+  /** Validations déléguées en vigueur : elles ouvrent des entrées du menu. */
+  grants?: readonly string[]
   children: React.ReactNode
 }) {
   const navigate = useNavigate()
-  const groups = navFor(user.role, { withDesign: import.meta.env.DEV })
+  const groups = navFor(user.role, { withDesign: import.meta.env.DEV, grants })
   const canSearch = user.role !== "admin_technique"
   return (
     <div className="flex min-h-svh">

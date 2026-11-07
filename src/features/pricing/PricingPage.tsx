@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChevronDown, Plus } from "lucide-react"
-import { useState } from "react"
+import { createContext, useContext, useState } from "react"
 
 import { api, ApiError, call, fieldErrors, userMessage, type components } from "@/api"
 import { Page } from "@/components/sifec/page"
@@ -11,6 +11,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { hasRole } from "@/app/roles"
+import { useGrants } from "@/features/admin"
+import { useSession } from "@/features/auth"
 import { cn } from "@/lib/utils"
 
 type S = components["schemas"]
@@ -25,6 +28,9 @@ const money = (amount: string | null | undefined, currency: string) =>
 
 const UNIT: Record<string, string> = { day: "Jour", night: "Nuitée", trip: "Voyage, billet", km: "Kilomètre", month: "Mois", flat: "Forfait" }
 const BASE: Record<string, string> = { fees: "Honoraires", reimbursables: "Frais remboursables", all: "Honoraires et frais remboursables" }
+
+/** Modifier le barème : chef de département, ou délégation « Modifier le barème » en vigueur. */
+const Editable = createContext(true)
 
 /** Message d'une erreur de saisie : messages par champ, sinon message général. */
 function messageOf(error: unknown): string {
@@ -54,6 +60,7 @@ function NewAmount({
 }) {
   const [values, setValues] = useState({ amount: "", currency: "XOF", effective_from: today(), reason: "" })
   const id = label.replace(/\W+/g, "-")
+  if (!useContext(Editable)) return null
   return (
     <form
       className="grid gap-3 rounded-lg bg-ground p-3 ring-1 ring-line sm:grid-cols-[1fr_6rem_10rem]"
@@ -131,6 +138,7 @@ function CategoryHistory({ category }: { category: S["RateCategory"] }) {
 
 function NewCode({ title, unit, onSave, pending, error }: { title: string; unit?: boolean; onSave: (values: { code: string; name: string; unit: string }) => void; pending: boolean; error: unknown }) {
   const [values, setValues] = useState({ code: "", name: "", unit: "day" })
+  if (!useContext(Editable)) return null
   return (
     <form
       aria-label={title}
@@ -313,6 +321,7 @@ function Reimbursables() {
 
 /** Taxes en vigueur à une date. La règle fiscale de l'avis prime toujours (H7). */
 function Taxes() {
+  const editable = useContext(Editable)
   const client = useQueryClient()
   const [at, setAt] = useState(today())
   const [values, setValues] = useState({ code: "", name: "", rate: "", base: "all", effective_from: today(), reason: "" })
@@ -367,6 +376,7 @@ function Taxes() {
         </Table>
         {rules.data && !rules.data.length ? <p className="px-4 py-3 text-[0.8125rem] text-ink-muted">Aucune taxe en vigueur à cette date.</p> : null}
       </div>
+      {editable ? (
       <form
         aria-label="Nouvelle taxe"
         className="grid gap-3 rounded-xl bg-card p-4 ring-1 ring-line sm:grid-cols-3"
@@ -418,6 +428,7 @@ function Taxes() {
           </Button>
         </div>
       </form>
+      ) : null}
     </div>
   )
 }
@@ -428,7 +439,11 @@ function Taxes() {
  * l'historique reste, pour qu'une offre se recalcule à l'identique.
  */
 export function PricingPage() {
+  const user = useSession().data?.user
+  const grants = useGrants(user?.id)
+  const editable = hasRole(user, ["chef_departement"]) || Boolean(grants.data?.includes("pricing.edit"))
   return (
+    <Editable.Provider value={editable}>
     <Page>
       <header className="mb-6 max-w-[68ch]">
         <h1 className="text-[1.75rem] leading-tight font-extrabold text-ink">Tarification</h1>
@@ -436,6 +451,11 @@ export function PricingPage() {
           Les montants qui servent au calcul des offres. Une nouvelle valeur prend effet à sa date ; la précédente reste dans l'historique, avec sa raison.
         </p>
       </header>
+      {editable ? null : (
+        <Notice tone="info" title="Consultation seule" className="mb-4">
+          Votre délégation permet de consulter le barème, pas de le modifier.
+        </Notice>
+      )}
       <Tabs defaultValue="bareme">
         <TabsList>
           <TabsTrigger value="bareme">Barème des honoraires</TabsTrigger>
@@ -453,5 +473,6 @@ export function PricingPage() {
         </TabsContent>
       </Tabs>
     </Page>
+    </Editable.Provider>
   )
 }

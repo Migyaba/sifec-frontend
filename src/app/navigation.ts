@@ -17,6 +17,7 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
+  Signature,
   SwatchBook,
   UserCog,
   Users,
@@ -29,6 +30,8 @@ export type NavItem = {
   label: string
   icon: typeof Gauge
   roles: Role[]
+  /** Validations déléguées qui donnent aussi l'entrée (délégation écrite en vigueur). */
+  grants?: string[]
   /** Lot du plan de l'interface qui construit l'écran. */
   lot: string
 }
@@ -64,7 +67,14 @@ export const NAV: NavGroup[] = [
       { to: "/formulaires", label: "Formulaires types", icon: FileSpreadsheet, roles: CONTENT, lot: "F1.6" },
       { to: "/modeles", label: "Modèles de documents", icon: LayoutTemplate, roles: CONTENT, lot: "F1.6" },
       { to: "/blocs", label: "Blocs de texte", icon: TextQuote, roles: CONTENT, lot: "F1.6" },
-      { to: "/tarification", label: "Tarification", icon: Coins, roles: ["chef_departement"], lot: "F1.6" },
+      {
+        to: "/tarification",
+        label: "Tarification",
+        icon: Coins,
+        roles: ["chef_departement"],
+        grants: ["pricing.view", "pricing.edit"],
+        lot: "F1.6",
+      },
       { to: "/recette", label: "Banc de recette", icon: FlaskConical, roles: SUPERVISORS, lot: "F2.8" },
     ],
   },
@@ -72,6 +82,7 @@ export const NAV: NavGroup[] = [
     title: "Administration",
     items: [
       { to: "/comptes", label: "Comptes et rôles", icon: UserCog, roles: ["admin_technique"], lot: "F1.8" },
+      { to: "/delegations", label: "Délégations", icon: Signature, roles: EVERYONE, lot: "F1.8" },
       { to: "/parametres", label: "Paramètres", icon: Settings, roles: ["chef_departement"], lot: "F1.8" },
       {
         to: "/journal",
@@ -95,8 +106,9 @@ export const DESIGN_ITEM: NavItem = {
 
 export const ALL_ITEMS: NavItem[] = NAV.flatMap((group) => group.items)
 
-export function navFor(role: Role, { withDesign = false } = {}): NavGroup[] {
-  const groups = NAV.map((group) => ({ ...group, items: group.items.filter((item) => item.roles.includes(role)) }))
+export function navFor(role: Role, { withDesign = false, grants = [] as readonly string[] } = {}): NavGroup[] {
+  const visible = (item: NavItem) => item.roles.includes(role) || Boolean(item.grants?.some((scope) => grants.includes(scope)))
+  const groups = NAV.map((group) => ({ ...group, items: group.items.filter(visible) }))
   if (withDesign) groups.push({ title: "Développement", items: [DESIGN_ITEM] })
   return groups.filter((group) => group.items.length > 0)
 }
